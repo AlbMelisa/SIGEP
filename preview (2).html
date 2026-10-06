@@ -1,0 +1,454 @@
+<!doctype html>
+<html lang="es">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>Simoca · Gestión de Personal</title>
+<style>
+*{box-sizing:border-box}body{margin:0;font-family:Inter,Segoe UI,Arial,sans-serif;background:#f7f8fc;color:#161a32}.app{display:flex;min-height:100vh}.side{width:238px;background:#fff;border-right:1px solid #e7e9f2;padding:24px 14px;position:fixed;inset:0 auto 0 0}.brand{font-weight:800;font-size:20px;padding:0 10px 24px;color:#24205c}.brand b{display:inline-grid;place-items:center;width:34px;height:34px;border-radius:10px;background:#6046d7;color:white;margin-right:8px}.nav button{width:100%;border:0;background:transparent;padding:12px 14px;margin:3px 0;text-align:left;border-radius:10px;font-size:14px;color:#59617a;cursor:pointer}.nav button:hover,.nav button.active{background:#f0edff;color:#5135ce;font-weight:700}.main{margin-left:238px;width:calc(100% - 238px)}header{height:68px;background:#fff;border-bottom:1px solid #e7e9f2;display:flex;align-items:center;justify-content:space-between;padding:0 28px;position:sticky;top:0;z-index:3}.search{background:#f7f8fc;border:1px solid #e0e3ee;border-radius:9px;padding:10px 14px;width:min(470px,45vw);color:#6d748c}.user{font-size:14px}.content{padding:30px;max-width:1500px;margin:auto}.page{display:none}.page.active{display:block}h1{margin:0 0 6px;font-size:30px}p.sub{margin:0 0 26px;color:#707791}.grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px}.card{background:#fff;border:1px solid #e4e7f0;border-radius:14px;padding:18px;box-shadow:0 2px 7px #24205c0a}.kpi .label{font-size:13px;color:#777e94}.kpi .value{font-size:28px;font-weight:800;margin:8px 0}.kpi small{color:#667085}.two{display:grid;grid-template-columns:1.25fr .75fr;gap:18px;margin-top:18px}.title{font-size:17px;font-weight:750;margin-bottom:16px}.btn{border:0;border-radius:9px;padding:10px 14px;cursor:pointer;font-weight:650}.btn:disabled{opacity:.45;cursor:not-allowed}.primary{background:#5839d4;color:#fff}.outline{background:#fff;border:1px solid #dcdfee;color:#4b536b}.danger{background:#fff0f0;color:#b12f2f;border:1px solid #ffd0d0}.toolbar{display:flex;gap:10px;justify-content:space-between;align-items:center;margin:18px 0;flex-wrap:wrap}.toolbar .left{display:flex;gap:8px;flex-wrap:wrap}.input,select,textarea{border:1px solid #dfe2ec;background:#fff;border-radius:8px;padding:9px 11px;color:#535b73}table{width:100%;border-collapse:collapse;background:#fff;border:1px solid #e5e7ef;border-radius:12px;overflow:hidden}th,td{padding:13px 14px;border-bottom:1px solid #edf0f5;text-align:left;font-size:13px;vertical-align:middle}th{background:#fafbfe;color:#656d83;font-weight:650}.badge{display:inline-block;padding:5px 9px;border-radius:20px;background:#eef2ff;color:#4933b9;font-size:12px;white-space:nowrap}.ok{background:#eaf8ef;color:#177447}.warn{background:#fff4dc;color:#8a5a00}.bad{background:#ffeaea;color:#a92c2c}.info{background:#eef6ff;color:#205f99}.event{padding:13px 0;border-bottom:1px solid #edf0f5;display:flex;gap:12px}.date{width:45px;height:45px;border-radius:10px;background:#f0edff;display:grid;place-items:center;color:#5236cb;font-weight:800}.bar{height:8px;background:#eeeef5;border-radius:10px;overflow:hidden;margin-top:7px}.bar span{display:block;height:100%;background:#6750d8;border-radius:10px}.rank{display:grid;grid-template-columns:42px 1fr 100px 90px;gap:10px;align-items:center;padding:12px 0;border-bottom:1px solid #edf0f5}.score{font-weight:800;color:#5135ce}.doclayout{display:grid;grid-template-columns:1.2fr .8fr;gap:16px}.preview{min-height:510px}.paper{margin:18px auto;background:#fff;border:1px solid #ddd;width:88%;height:350px;padding:35px;box-shadow:0 3px 12px #00000010}.paper h2{text-align:center;font-family:Georgia,serif}.role{margin-top:auto;position:absolute;bottom:22px;left:22px;right:22px;font-size:12px;color:#7a8196}.modal{display:none;position:fixed;inset:0;background:#11152a77;z-index:10;align-items:center;justify-content:center;padding:20px}.modal.show{display:flex}.modalbox{width:min(700px,96vw);max-height:90vh;overflow:auto;background:#fff;border-radius:16px;padding:24px}.formgrid{display:grid;grid-template-columns:1fr 1fr;gap:12px}.formgrid label{font-size:12px;color:#687087}.formgrid input,.formgrid select,.formgrid textarea{width:100%;margin-top:5px}.full{grid-column:1/-1}.tabs{display:flex;gap:8px;margin:0 0 18px}.tab{padding:8px 12px;border:1px solid #dfe2ec;background:#fff;border-radius:8px;cursor:pointer}.tab.active{background:#f0edff;color:#5135ce;border-color:#cfc6ff;font-weight:700}.shift-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:10px}.shift-card{padding:12px;border:1px solid #e2e5ee;border-radius:12px;background:#fff}.shift-card b{display:block;margin-bottom:5px}.helper{font-size:12px;color:#7b8296}.attendance-row input[type=time]{width:110px}.status-select{min-width:140px}.quick{display:flex;gap:6px;flex-wrap:wrap}.quick button{padding:6px 9px;font-size:12px}.note{padding:12px 14px;background:#f6f3ff;border:1px solid #e3dcff;border-radius:10px;color:#574d8f;font-size:13px;margin:12px 0}.muted{color:#7b8296}.actions{display:flex;gap:6px;flex-wrap:wrap}.mini{padding:7px 9px;font-size:12px}.summary-box{display:grid;grid-template-columns:repeat(3,1fr);gap:10px;margin-bottom:14px}.summary-box .card{padding:14px}.summary-box .value{font-size:20px;font-weight:800;margin-top:4px}.hidden{display:none!important}.toast{position:fixed;right:22px;bottom:22px;background:#191c2c;color:#fff;padding:12px 16px;border-radius:10px;opacity:0;transform:translateY(10px);transition:.2s;z-index:30}.toast.show{opacity:1;transform:translateY(0)}
+@media(max-width:1100px){.shift-grid{grid-template-columns:1fr}.summary-box{grid-template-columns:1fr}.doclayout,.two{grid-template-columns:1fr}}@media(max-width:950px){.side{width:190px}.main{margin-left:190px;width:calc(100% - 190px)}.grid{grid-template-columns:repeat(2,1fr)}}
+</style>
+</head>
+<body>
+<div id="loginScreen" style="position:fixed;inset:0;z-index:9999;display:flex;align-items:center;justify-content:center;background:#f6f7fb;padding:24px">
+<div style="width:100%;max-width:410px;background:#fff;border:1px solid #e8e9ef;border-radius:18px;padding:34px;box-shadow:0 12px 40px rgba(31,35,48,.08)">
+<div style="width:48px;height:48px;border-radius:12px;background:#6c5ce7;color:white;display:flex;align-items:center;justify-content:center;font-weight:800;font-size:20px;margin-bottom:20px">S</div>
+<h1 style="font-size:25px;margin:0 0 7px">Sistema de Personal</h1><p style="margin:0 0 26px;color:#777">Municipalidad de Simoca</p>
+<label style="display:block;margin-bottom:16px;font-size:13px;font-weight:600">Usuario<input id="loginUser" class="input" value="jefe" style="width:100%;margin-top:7px;box-sizing:border-box"></label>
+<label style="display:block;margin-bottom:20px;font-size:13px;font-weight:600">Contraseña<input id="loginPass" class="input" type="password" value="1234" style="width:100%;margin-top:7px;box-sizing:border-box"></label>
+<button class="btn primary" onclick="doLogin()" style="width:100%;justify-content:center">Iniciar sesión</button>
+<p id="loginError" style="display:none;color:#c0392b;font-size:13px;margin:14px 0 0">Usuario o contraseña incorrectos.</p><p style="font-size:12px;color:#999;margin:18px 0 0;text-align:center">Prototipo: jefe / 1234</p>
+</div></div>
+
+<div class="app">
+<aside class="side"><div class="brand"><b>S</b> Simoca</div><nav class="nav" id="nav">
+<button data-page="inicio" class="active">⌂ &nbsp; Inicio</button><button data-page="personal">♙ &nbsp; Personal</button><button data-page="asistencia">✓ &nbsp; Asistencia</button><button data-page="eventos">◫ &nbsp; Eventos</button><button data-page="planificacion">▦ &nbsp; Planificación de sábados</button><button data-page="asignacion">★ &nbsp; Asignación a eventos</button><button data-page="documentos">▣ &nbsp; Documentos</button></nav><div class="role">Municipalidad de Simoca<br><b>Rol actual: Jefe</b></div></aside>
+<main class="main"><header><input id="globalSearch" class="search" placeholder="Buscar empleados, eventos o documentos..."><div class="user">🔔 &nbsp; <b>Melisa Albornoz</b> ▾</div></header><div class="content">
+<section id="inicio" class="page active"><h1>Panel general</h1><p class="sub">Resumen operativo de personal, asistencia y eventos.</p><div class="grid">
+<div class="card kpi"><div class="label">Personal activo</div><div class="value" id="kpiPersonal">8</div><small>Personal registrado en el prototipo</small></div><div class="card kpi"><div class="label">Presentes hoy</div><div class="value" id="kpiPresentes">6</div><small>Según el registro de asistencia</small></div><div class="card kpi"><div class="label">Próximos eventos</div><div class="value">4</div><small>2 convocatorias pendientes</small></div><div class="card kpi"><div class="label">Turnos activos</div><div class="value">3</div><small>Mañana · Siesta · Noche</small></div></div>
+<div class="two"><div class="card"><div class="title">Distribución de personal por modalidad</div><div style="display:grid;gap:16px"><div>Régimen incorporado <span style="float:right">4</span><div class="bar"><span style="width:50%"></span></div></div><div>Régimen histórico <span style="float:right">4</span><div class="bar"><span style="width:50%"></span></div></div></div><div class="note">Se reemplazó “nuevo/viejo” por <b>Régimen incorporado</b> y <b>Régimen histórico</b>. Son nombres de trabajo y pueden cambiarse luego por una denominación institucional.</div></div><div class="card"><div class="title">Próximos eventos</div><div class="event"><div class="date">12<br>SEP</div><div><b>Feria municipal</b><br><small>18 personas · Plaza principal</small></div></div><div class="event"><div class="date">18<br>SEP</div><div><b>Acto institucional</b><br><small>12 personas · Casa de la Cultura</small></div></div><div class="event"><div class="date">21<br>SEP</div><div><b>Jornada comunitaria</b><br><small>20 personas · Parque municipal</small></div></div></div></div></section>
+
+<section id="personal" class="page">
+<h1>Personal</h1><p class="sub">Administración del personal y asignación de su turno habitual.</p>
+<div class="toolbar"><div class="left">
+<input id="personalSearch" class="input" placeholder="Buscar por nombre, documento o área...">
+<select id="personalRegimen"><option value="">Todos los regímenes</option><option>Régimen incorporado</option><option>Régimen histórico</option></select>
+</div><button class="btn primary" onclick="openEmployeeModal()">+ Nuevo empleado</button></div>
+<table id="personalTable"><thead><tr><th>Empleado</th><th>Documento</th><th>Área / función</th><th>Régimen</th><th>Turno habitual</th><th>Acciones</th></tr></thead><tbody></tbody></table>
+</section>
+
+<section id="asistencia" class="page">
+<h1>Asistencia</h1><p class="sub">Registrá la jornada diaria o consultá el historial de días trabajados.</p>
+
+<div class="tabs">
+  <button id="attTabRegister" class="tab active" onclick="setAttendanceView('registro')">Registro del día</button>
+  <button id="attTabHistory" class="tab" onclick="setAttendanceView('historial')">Historial</button>
+</div>
+
+<div id="attendanceRegisterView">
+  <div class="toolbar">
+    <div class="left">
+      <input type="date" id="attendanceDate" class="input" value="2026-09-09">
+      <select id="attendanceShiftFilter"><option value="">Todos los turnos</option><option>Mañana</option><option>Siesta</option><option>Noche</option></select>
+    </div>
+    <button class="btn primary" onclick="saveAttendance()">Guardar asistencia</button>
+  </div>
+  <table id="attendanceTable"><thead><tr><th>Empleado</th><th>Turno habitual</th><th>Ingreso</th><th>Salida</th><th>Estado</th><th>Observación</th></tr></thead><tbody></tbody></table>
+</div>
+
+<div id="attendanceHistoryView" class="hidden">
+  <div class="toolbar">
+    <div class="left">
+      <input type="date" id="historyFrom" class="input" value="2026-09-01">
+      <input type="date" id="historyTo" class="input" value="2026-09-09">
+      <input id="historySearch" class="input" placeholder="Buscar empleado...">
+      <select id="historyShift"><option value="">Todos los turnos</option><option>Mañana</option><option>Siesta</option><option>Intermedio</option><option>Noche</option></select><select id="historyType"><option value="">Todos los tipos</option><option>Ordinaria</option><option>Sábado</option><option>Evento</option></select><select id="historyStatus"><option value="">Todos los estados</option><option>Presente</option><option>Ausente</option><option>Franco</option><option>Nota médica</option><option>Licencia</option><option>Permiso especial</option></select>
+      <button class="btn outline" onclick="renderAttendanceHistory()">Filtrar</button>
+    </div>
+  </div>
+  <table><thead><tr><th>Fecha</th><th>Tipo de jornada</th><th>Empleado</th><th>Turno</th><th>Ingreso</th><th>Salida</th><th>Estado</th></tr></thead><tbody id="attendanceHistoryBody"></tbody></table>
+</div>
+</section>
+
+<section id="eventos" class="page"><h1>Eventos</h1><p class="sub">Creá eventos y gestioná sus convocatorias.</p><div class="toolbar"><div class="left"><select><option>Próximos eventos</option><option>Finalizados</option></select></div><button class="btn primary" onclick="document.getElementById('eventModal').classList.add('show')">+ Crear evento</button></div><table><tr><th>Evento</th><th>Fecha</th><th>Lugar</th><th>Personal requerido</th><th>Convocatoria</th><th></th></tr><tr><td><b>Feria municipal</b></td><td>12/09/2026 · 17:00</td><td>Plaza principal</td><td>18</td><td><span class="badge warn">Pendiente</span></td><td><button class="btn outline mini" onclick="go('asignacion')">Asignar personal</button></td></tr><tr><td><b>Acto institucional</b></td><td>18/09/2026 · 09:00</td><td>Casa de la Cultura</td><td>12</td><td><span class="badge ok">Confirmada</span></td><td><button class="btn outline mini" onclick="toast('Detalle del evento abierto')">Ver detalle</button></td></tr></table></section>
+
+<section id="asignacion_old" class="page"><h1>Asignación de personal</h1><p class="sub">Sugerencia dinámica para “Feria municipal” · 12/09/2026.</p><div class="two"><div class="card"><div class="title">Ranking sugerido</div><div class="note">La sugerencia puede considerar asistencia reciente, participación previa, disponibilidad y reglas de rotación. Para sábados, el prototipo contempla alternancia de turno para el régimen incorporado y división por mitades para los turnos diurnos.</div><div class="rank"><b>#1</b><div><b>Lucía Gómez</b><br><small>Disponible · último sábado: mañana</small></div><div class="score">92 pts</div><input type="checkbox" checked></div><div class="rank"><b>#2</b><div><b>Martín Díaz</b><br><small>Disponible · último sábado: siesta</small></div><div class="score">89 pts</div><input type="checkbox" checked></div><div class="rank"><b>#3</b><div><b>Ana Medina</b><br><small>Disponible · rotación favorable</small></div><div class="score">86 pts</div><input type="checkbox" checked></div><div class="rank"><b>#4</b><div><b>José Pérez</b><br><small>Disponible · menor participación reciente</small></div><div class="score">84 pts</div><input type="checkbox" checked></div></div><div class="card"><div class="title">Reglas operativas</div><p><b>Régimen incorporado</b><br><small>Lun-vie: 06–12, 12–18, 18–24. Sábado: 07–13 y 13–19. Se programa aproximadamente la mitad y se alterna el turno respecto del último sábado trabajado.</small></p><p><b>Régimen histórico</b><br><small>Turnos 07–13, 13–19 y 19–07. Después de un turno noche, se respetan dos días de descanso. Los sábados diurnos se distribuyen por mitades.</small></p><button class="btn primary" style="width:100%" onclick="confirmAssignment()">Confirmar y notificar</button></div></div></section>
+
+
+<section id="planificacion" class="page">
+  <h1>Planificación de sábados</h1>
+  <p class="sub">El sistema propone quiénes trabajan y los muestra directamente organizados por turno.</p>
+
+  <div class="card">
+    <div class="toolbar" style="margin-top:0">
+      <div class="left">
+        <label class="helper">Fecha<br><input id="satDate" class="input" type="date" value="2026-09-12"></label>
+        <label class="helper">Grupo de personal<br>
+          <select id="satRegime">
+            <option value="incorporado">Régimen incorporado</option>
+            <option value="historico">Régimen histórico</option>
+          </select>
+        </label>
+      </div>
+      <button class="btn primary" onclick="generateSaturday()">Generar propuesta</button>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <div class="toolbar" style="margin-top:0">
+      <div>
+        <div class="title" style="margin:0">Personal que trabaja</div>
+        <small id="satEditSummary" class="muted"></small>
+      </div>
+      <div>
+        <button class="btn outline" onclick="openSaturdayEdit()">Editar listado</button>
+        <button class="btn primary" onclick="confirmSaturday()">Confirmar</button>
+      </div>
+    </div>
+    <div id="satShiftColumns" style="display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:14px"></div>
+  </div>
+
+  <div id="satEditPanel" class="card hidden" style="margin-top:18px">
+    <div class="toolbar" style="margin-top:0">
+      <div>
+        <div class="title" style="margin:0">Editar listado</div>
+        <small class="muted">Modificá quién trabaja o el turno asignado.</small>
+      </div>
+      <button class="btn outline" onclick="closeSaturdayEdit()">Cerrar edición</button>
+    </div>
+    <table>
+      <thead><tr><th>Empleado</th><th>Área / función</th><th>Último sábado</th><th>Este sábado</th><th>Turno</th></tr></thead>
+      <tbody id="satEditableBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="asignacion" class="page">
+  <h1>Asignación a eventos</h1>
+  <p class="sub">Configurá los turnos del evento, su cupo y generá una convocatoria rotativa respecto del evento anterior.</p>
+
+  <div class="card">
+    <div class="toolbar" style="margin-top:0">
+      <div class="left">
+        <label class="helper">Evento<br>
+          <select id="eventSelect" onchange="renderEventPlan()">
+            <option>Feria municipal · 12/09/2026</option>
+            <option>Operativo Plaza · 19/09/2026</option>
+          </select>
+        </label>
+        <label class="helper">Lugar<br><input class="input" value="Plaza principal"></label>
+      </div>
+      <button class="btn outline" onclick="openEventShiftModal()">+ Agregar turno</button>
+    </div>
+    <div class="note">
+      Para los eventos, los horarios no tienen que coincidir con los turnos habituales. El Jefe define los horarios y el máximo de personas por turno.
+      Al generar la sugerencia, el sistema prioriza empleados que <b>no participaron en el evento anterior</b> y evita, cuando sea posible,
+      repetir el mismo turno que realizaron en su última participación.
+    </div>
+  </div>
+
+  <div class="two">
+    <div class="card">
+      <div class="title">1. Configuración de turnos del evento</div>
+      <table>
+        <thead><tr><th>Turno</th><th>Desde</th><th>Hasta</th><th>Cupo máximo</th><th></th></tr></thead>
+        <tbody id="eventShiftBody">
+          <tr><td><input class="input" value="Mañana"></td><td><input class="input" type="time" value="08:00"></td><td><input class="input" type="time" value="13:00"></td><td><input class="input eventLimit" type="number" min="1" value="4" style="width:80px"></td><td><button class="btn danger" onclick="this.closest('tr').remove()">×</button></td></tr>
+          <tr><td><input class="input" value="Tarde"></td><td><input class="input" type="time" value="13:00"></td><td><input class="input" type="time" value="19:00"></td><td><input class="input eventLimit" type="number" min="1" value="4" style="width:80px"></td><td><button class="btn danger" onclick="this.closest('tr').remove()">×</button></td></tr>
+          <tr><td><input class="input" value="Noche"></td><td><input class="input" type="time" value="19:00"></td><td><input class="input" type="time" value="23:30"></td><td><input class="input eventLimit" type="number" min="1" value="3" style="width:80px"></td><td><button class="btn danger" onclick="this.closest('tr').remove()">×</button></td></tr>
+        </tbody>
+      </table>
+      <button class="btn primary" style="margin-top:14px" onclick="generateEventAssignment()">⚙ Generar convocatoria</button>
+    </div>
+
+    <div class="card">
+      <div class="title">Rotación respecto del evento anterior</div>
+      <p class="helper">Evento de referencia: <b>Acto institucional · 29/08/2026</b></p>
+      <div class="event"><div class="date">✓</div><div><b>Prioridad alta</b><br><small>No trabajó en el evento anterior.</small></div></div>
+      <div class="event"><div class="date">↻</div><div><b>Prioridad media</b><br><small>Trabajó anteriormente, pero puede cambiar de turno.</small></div></div>
+      <div class="event"><div class="date">!</div><div><b>No disponible</b><br><small>Licencia, franco, nota médica, permiso o incompatibilidad horaria.</small></div></div>
+      <p class="helper" style="margin-top:14px">La convocatoria queda como sugerencia hasta que el Jefe la confirme.</p>
+    </div>
+  </div>
+
+  <div class="card" style="margin-top:18px">
+    <div class="toolbar" style="margin-top:0">
+      <div class="title" style="margin:0">2. Convocatoria sugerida</div>
+      <div><span id="eventCount" class="badge info">0 seleccionados</span> <button class="btn primary" onclick="confirmEvent()">Confirmar y notificar</button></div>
+    </div>
+    <table>
+      <thead><tr><th>Empleado</th><th>Área / función</th><th>Evento anterior</th><th>Turno anterior</th><th>Puntaje rotación</th><th>Turno sugerido</th><th>Convocado</th></tr></thead>
+      <tbody id="eventAssignmentBody"></tbody>
+    </table>
+  </div>
+</section>
+
+<section id="documentos" class="page"><h1>Documentos</h1><p class="sub">Gestión y consulta de documentos de la organización.</p><div class="toolbar"><div class="left"><select><option>Todas las categorías</option><option>Normativas</option><option>Administración</option></select><select><option>Todos los tipos</option><option>PDF</option><option>Excel</option><option>Word</option></select></div><button class="btn primary" onclick="document.getElementById('file').click()">↑ Subir documento</button><input id="file" type="file" hidden multiple accept=".pdf,.xls,.xlsx,.doc,.docx"></div><div class="doclayout"><div><table id="docsTable"><tr><th>Nombre</th><th>Categoría</th><th>Tipo</th><th>Fecha</th><th>Acciones</th></tr><tr><td>📕 Reglamento interno.pdf</td><td><span class="badge">Normativas</span></td><td>PDF</td><td>08/09/2026</td><td><button class="btn outline mini" onclick="previewDoc('Reglamento interno.pdf','PDF')">Ver</button></td></tr><tr><td>📗 Presupuesto 2026.xlsx</td><td>Administración</td><td>Excel</td><td>04/09/2026</td><td><button class="btn outline mini" onclick="previewDoc('Presupuesto 2026.xlsx','Excel')">Ver</button></td></tr><tr><td>📘 Manual de uso.docx</td><td>Capacitación</td><td>Word</td><td>01/09/2026</td><td><button class="btn outline mini" onclick="previewDoc('Manual de uso.docx','Word')">Ver</button></td></tr></table></div><div class="card preview"><div class="title" id="docTitle">📕 Reglamento interno.pdf</div><small id="docMeta">PDF · Vista previa ilustrativa</small><div class="paper"><h2 id="paperTitle">REGLAMENTO INTERNO</h2><hr><h3>Vista previa</h3><p id="paperText">Seleccioná un documento para visualizar información básica.</p></div><button class="btn outline" onclick="toast('Descarga simulada')">⇩ Descargar</button> <button class="btn primary" onclick="toast('Documento abierto en una nueva vista')">Abrir</button></div></div></section>
+
+<section id="usuarios" class="page"><h1>Usuarios y roles</h1><p class="sub">Administración de accesos al sistema.</p><div class="toolbar"><div></div><button class="btn primary" onclick="toast('Formulario de alta de usuario disponible como siguiente módulo')">+ Nuevo usuario</button></div><table><tr><th>Usuario</th><th>Rol</th><th>Estado</th><th>Último acceso</th><th></th></tr><tr><td>María Sánchez</td><td><span class="badge">Jefe</span></td><td><span class="badge ok">Activo</span></td><td>Hoy, 09:14</td><td><button class="btn outline mini" onclick="toast('Edición de usuario simulada')">Editar</button></td></tr><tr><td>Pedro Gómez</td><td>Encargado de asistencia</td><td><span class="badge ok">Activo</span></td><td>Hoy, 08:02</td><td><button class="btn outline mini" onclick="toast('Edición de usuario simulada')">Editar</button></td></tr></table></section>
+</div></main></div>
+
+<div id="eventShiftModal" class="modal"><div class="modalbox"><h2>Nuevo turno del evento</h2><p class="sub">Este turno se guarda únicamente para el evento seleccionado.</p><div class="formgrid"><label class="full">Nombre del turno<input id="newShiftName" class="input" placeholder="Ej.: Turno tarde"></label><label>Hora de inicio<input id="newShiftStart" class="input" type="time" value="14:00"></label><label>Hora de fin<input id="newShiftEnd" class="input" type="time" value="20:00"></label><label class="full">Máximo de empleados<input id="newShiftMax" class="input" type="number" min="1" value="10"></label></div><div class="note">No modifica los turnos habituales del personal.</div><div style="text-align:right;margin-top:20px"><button class="btn outline" onclick="closeEventShiftModal()">Cancelar</button> <button class="btn primary" onclick="saveEventShift()">Guardar turno</button></div></div></div><div id="employeeModal" class="modal"><div class="modalbox">
+<h2 id="employeeModalTitle">Nuevo empleado</h2><p class="sub">Cargá sus datos y asignalo a uno de los turnos establecidos.</p>
+<div class="formgrid">
+<label>Nombre<input id="empNombre" class="input"></label>
+<label>Apellido<input id="empApellido" class="input"></label>
+<label>Documento<input id="empDocumento" class="input"></label>
+<label>Celular<input id="empCelular" class="input"></label>
+<label class="full">Dirección<input id="empDireccion" class="input"></label>
+<label>Régimen<select id="empRegimen" onchange="updateEmployeeShiftOptions()"><option>Régimen incorporado</option><option>Régimen histórico</option></select></label>
+<label>Área / función<input id="empArea" class="input" placeholder="Ej.: Tránsito"></label>
+<label class="full">Turno habitual<select id="empTurno"></select></label>
+</div>
+<div class="note">El turno habitual se utiliza de lunes a viernes. Los sábados se aplica la planificación rotativa.</div>
+<div style="text-align:right;margin-top:20px"><button class="btn outline" onclick="closeEmployeeModal()">Cancelar</button> <button class="btn primary" onclick="saveEmployee()">Guardar</button></div>
+</div></div>
+
+<div id="eventModal" class="modal"><div class="modalbox"><h2>Crear evento</h2><p class="sub">Completá los datos básicos para generar luego la sugerencia de personal.</p><div class="formgrid"><label class="full">Nombre<input class="input" value="Nuevo evento municipal"></label><label>Fecha<input type="date" class="input" value="2026-09-25"></label><label>Hora<input type="time" class="input" value="18:00"></label><label class="full">Lugar<input class="input" value="Plaza principal"></label><label>Personal requerido<input type="number" class="input" value="15"></label><label>Estado<select><option>Borrador</option></select></label></div><div style="text-align:right;margin-top:20px"><button class="btn outline" onclick="document.getElementById('eventModal').classList.remove('show')">Cancelar</button> <button class="btn primary" onclick="document.getElementById('eventModal').classList.remove('show');go('asignacion');toast('Evento creado. Se generó una sugerencia de personal')">Crear y sugerir personal</button></div></div></div>
+<div id="toast" class="toast"></div>
+<script>
+const employees=[
+{id:1,nombre:'Lucía',apellido:'Gómez',documento:'32.456.781',direccion:'B° Centro 245',celular:'381 555-1024',regimen:'Régimen incorporado',area:'Servicios',turno:'Mañana'},
+{id:2,nombre:'Martín',apellido:'Díaz',documento:'30.127.903',direccion:'Av. Mitre 880',celular:'381 555-1081',regimen:'Régimen incorporado',area:'Tránsito',turno:'Siesta'},
+{id:3,nombre:'Carla',apellido:'Ruiz',documento:'28.440.215',direccion:'San Martín 134',celular:'381 555-1137',regimen:'Régimen histórico',area:'Administración',turno:'Mañana'},
+{id:4,nombre:'Diego',apellido:'López',documento:'27.968.540',direccion:'Las Heras 701',celular:'381 555-1170',regimen:'Régimen histórico',area:'Servicios',turno:'Siesta'},
+{id:5,nombre:'Ana',apellido:'Medina',documento:'33.024.719',direccion:'Belgrano 421',celular:'381 555-1212',regimen:'Régimen incorporado',area:'Cultura',turno:'Noche'},
+{id:6,nombre:'José',apellido:'Pérez',documento:'29.813.004',direccion:'9 de Julio 92',celular:'381 555-1344',regimen:'Régimen histórico',area:'Servicios',turno:'Noche'},
+{id:7,nombre:'Mónica',apellido:'Sosa',documento:'31.444.229',direccion:'Rivadavia 414',celular:'381 555-1450',regimen:'Régimen incorporado',area:'Desarrollo Social',turno:'Mañana'},
+{id:8,nombre:'Raúl',apellido:'Fernández',documento:'26.880.331',direccion:'Moreno 503',celular:'381 555-1510',regimen:'Régimen histórico',area:'Tránsito',turno:'Siesta'}];
+let editId=null;
+let attendance={1:{in:'06:02',out:'12:00',status:'Presente',obs:''},2:{in:'06:10',out:'12:03',status:'Presente',obs:''},3:{in:'07:00',out:'13:00',status:'Presente',obs:''},4:{in:'',out:'',status:'Licencia',obs:'Licencia registrada'},5:{in:'12:00',out:'18:00',status:'Presente',obs:''},6:{in:'19:00',out:'07:00',status:'Presente',obs:'Turno nocturno'},7:{in:'',out:'',status:'Franco',obs:'Franco compensatorio'},8:{in:'07:05',out:'13:00',status:'Presente',obs:''}};
+function go(id){document.querySelectorAll('.page').forEach(x=>x.classList.remove('active'));document.querySelectorAll('.nav button').forEach(x=>x.classList.remove('active'));document.getElementById(id).classList.add('active');document.querySelector(`[data-page="${id}"]`).classList.add('active');if(id==='personal')renderPersonal();if(id==='asistencia')renderAttendance()}
+document.querySelectorAll('.nav button').forEach(b=>b.onclick=()=>go(b.dataset.page));
+function toast(msg){const t=document.getElementById('toast');t.textContent=msg;t.classList.add('show');clearTimeout(window.toastTimer);window.toastTimer=setTimeout(()=>t.classList.remove('show'),2200)}
+function shiftLabel(e){
+ if(e.regimen==='Régimen incorporado'){
+   return e.turno==='Mañana'?'Mañana · 06:00–12:00':e.turno==='Siesta'?'Siesta · 12:00–18:00':'Noche · 18:00–24:00';
+ }
+ return e.turno==='Mañana'?'Mañana · 07:00–13:00':e.turno==='Siesta'?'Siesta · 13:00–19:00':'Noche · 19:00–07:00';
+}
+function renderPersonal(){
+ const q=document.getElementById('personalSearch').value.toLowerCase(), r=document.getElementById('personalRegimen').value;
+ const body=document.querySelector('#personalTable tbody'); body.innerHTML='';
+ employees.filter(e=>(!r||e.regimen===r)&&(`${e.nombre} ${e.apellido} ${e.documento} ${e.area}`.toLowerCase().includes(q))).forEach(e=>{
+  body.insertAdjacentHTML('beforeend',`<tr><td><b>${e.nombre} ${e.apellido}</b></td><td>${e.documento}</td><td>${e.area}</td><td><span class="badge">${e.regimen}</span></td><td>${shiftLabel(e)}</td><td><div class="actions"><button class="btn outline mini" onclick="editEmployee(${e.id})">Editar</button><button class="btn danger mini" onclick="deleteEmployee(${e.id})">Eliminar</button></div></td></tr>`);
+ }); document.getElementById('kpiPersonal').textContent=employees.length;
+}
+function updateEmployeeShiftOptions(selected){
+ const regime=document.getElementById('empRegimen').value, s=document.getElementById('empTurno');
+ const opts=regime==='Régimen incorporado'?['Mañana','Siesta','Noche']:['Mañana','Siesta','Noche'];
+ s.innerHTML=opts.map(x=>`<option ${x===selected?'selected':''}>${x}</option>`).join('');
+}
+function openEmployeeModal(){
+ editId=null; employeeModalTitle.textContent='Nuevo empleado';
+ ['empNombre','empApellido','empDocumento','empCelular','empDireccion','empArea'].forEach(id=>document.getElementById(id).value='');
+ empRegimen.value='Régimen incorporado'; updateEmployeeShiftOptions('Mañana'); employeeModal.classList.add('show');
+}
+function closeEmployeeModal(){employeeModal.classList.remove('show')}
+function editEmployee(id){
+ const e=employees.find(x=>x.id===id); editId=id; employeeModalTitle.textContent='Editar empleado';
+ empNombre.value=e.nombre;empApellido.value=e.apellido;empDocumento.value=e.documento;empCelular.value=e.celular;empDireccion.value=e.direccion;empRegimen.value=e.regimen;empArea.value=e.area;
+ updateEmployeeShiftOptions(e.turno); employeeModal.classList.add('show');
+}
+function saveEmployee(){
+ const data={nombre:empNombre.value.trim(),apellido:empApellido.value.trim(),documento:empDocumento.value.trim(),celular:empCelular.value.trim(),direccion:empDireccion.value.trim(),regimen:empRegimen.value,area:empArea.value.trim(),turno:empTurno.value};
+ if(!data.nombre||!data.apellido||!data.documento){toast('Completá nombre, apellido y documento');return}
+ if(editId){Object.assign(employees.find(x=>x.id===editId),data);toast('Empleado actualizado')}
+ else{data.id=Math.max(...employees.map(e=>e.id))+1;employees.push(data);attendance[data.id]={in:'',out:'',status:'Ausente',obs:''};toast('Empleado creado y asignado al turno '+data.turno)}
+ closeEmployeeModal();renderPersonal();renderAttendance();
+}
+function deleteEmployee(id){if(!confirm('¿Eliminar este empleado del prototipo?'))return;employees.splice(employees.findIndex(x=>x.id===id),1);delete attendance[id];renderPersonal();renderAttendance();toast('Empleado eliminado')}
+personalSearch.addEventListener('input',renderPersonal);personalRegimen.addEventListener('change',renderPersonal);
+
+const attendanceHistory=[
+ {date:'2026-09-09',id:1,in:'06:02',out:'12:00',status:'Presente',type:'Ordinaria',shift:'Mañana'},
+ {date:'2026-09-09',id:2,in:'12:04',out:'18:00',status:'Presente',type:'Ordinaria',shift:'Siesta'},
+ {date:'2026-09-09',id:3,in:'07:00',out:'13:00',status:'Presente',type:'Ordinaria',shift:'Mañana'},
+ {date:'2026-09-09',id:4,in:'',out:'',status:'Licencia',type:'Ordinaria',shift:'Siesta'},
+ {date:'2026-09-05',id:1,in:'07:00',out:'13:00',status:'Presente',type:'Sábado',shift:'Mañana'},
+ {date:'2026-09-05',id:2,in:'13:00',out:'19:00',status:'Presente',type:'Sábado',shift:'Siesta'},
+ {date:'2026-09-05',id:3,in:'',out:'',status:'Ausente',type:'Sábado',shift:'Mañana'},
+ {date:'2026-08-29',id:4,in:'07:01',out:'13:00',status:'Presente',type:'Sábado',shift:'Mañana'},
+ {date:'2026-08-29',id:5,in:'13:02',out:'19:00',status:'Presente',type:'Sábado',shift:'Siesta'}
+];
+function setAttendanceView(view){
+ const reg=view==='registro'; attendanceRegisterView.classList.toggle('hidden',!reg);attendanceHistoryView.classList.toggle('hidden',reg);
+ attTabRegister.classList.toggle('active',reg);attTabHistory.classList.toggle('active',!reg);
+ if(!reg)renderAttendanceHistory();
+}
+function renderAttendance(){
+ const shift=document.getElementById('attendanceShiftFilter').value, body=document.querySelector('#attendanceTable tbody'); body.innerHTML='';
+ employees.filter(e=>!shift||e.turno===shift).forEach(e=>{
+   const a=attendance[e.id]||{in:'',out:'',status:'Ausente',obs:''};
+   body.insertAdjacentHTML('beforeend',`<tr class="attendance-row"><td><b>${e.nombre} ${e.apellido}</b><br><small>${e.area}</small></td><td><span class="badge">${shiftLabel(e)}</span></td><td><input type="time" value="${a.in}" onchange="updateAttendance(${e.id},'in',this.value)"></td><td><input type="time" value="${a.out}" onchange="updateAttendance(${e.id},'out',this.value)"></td><td><select class="status-select" onchange="updateAttendance(${e.id},'status',this.value)">${['Presente','Ausente','Franco','Nota médica','Licencia','Permiso especial'].map(x=>`<option ${x===a.status?'selected':''}>${x}</option>`).join('')}</select></td><td><input class="input" value="${a.obs||''}" placeholder="Opcional" onchange="updateAttendance(${e.id},'obs',this.value)"></td></tr>`);
+ });
+ updateSummary();
+}
+function updateAttendance(id,k,v){attendance[id]=attendance[id]||{};attendance[id][k]=v;if(k==='status'&&v!=='Presente'){attendance[id].in='';attendance[id].out=''}updateSummary()}
+function updateSummary(){const p=Object.values(attendance).filter(a=>a.status==='Presente').length;kpiPresentes.textContent=p}
+function saveAttendance(){
+ const date=attendanceDate.value; const type=new Date(date+'T12:00:00').getDay()===6?'Sábado':'Ordinaria';
+ employees.forEach(e=>{const a=attendance[e.id];if(a){const old=attendanceHistory.find(x=>x.date===date&&x.id===e.id);const row={date,id:e.id,in:a.in||'',out:a.out||'',status:a.status||'Ausente',type,shift:e.turno};if(old)Object.assign(old,row);else attendanceHistory.push(row)}});
+ toast('Asistencia guardada en el historial'); renderAttendanceHistory();
+}
+function renderAttendanceHistory(){
+ const from=historyFrom.value,to=historyTo.value,q=historySearch.value.toLowerCase(),status=historyStatus.value;
+ const shift=document.getElementById('historyShift').value,type=document.getElementById('historyType').value;
+ const rows=attendanceHistory.filter(a=>a.date>=from&&a.date<=to&&(!status||a.status===status)&&(!shift||a.shift===shift)&&(!type||a.type===type)).filter(a=>{const e=employees.find(x=>x.id===a.id);return e&&(`${e.nombre} ${e.apellido}`.toLowerCase().includes(q))}).sort((a,b)=>b.date.localeCompare(a.date));
+ attendanceHistoryBody.innerHTML=rows.map(a=>{const e=employees.find(x=>x.id===a.id);return `<tr><td>${a.date.split('-').reverse().join('/')}</td><td><span class="badge">${a.type||'Ordinaria'}</span></td><td><b>${e.nombre} ${e.apellido}</b></td><td>${a.shift||e.turno}</td><td>${a.in||'—'}</td><td>${a.out||'—'}</td><td><span class="badge ${a.status==='Presente'?'ok':a.status==='Ausente'?'bad':'warn'}">${a.status}</span></td></tr>`}).join('')||'<tr><td colspan="7" class="muted">No hay registros para los filtros seleccionados.</td></tr>';
+}
+attendanceShiftFilter.addEventListener('change',renderAttendance);
+attendanceDate.addEventListener('change',()=>toast('Fecha seleccionada para el registro'));
+function confirmAssignment(){toast('Convocatoria confirmada y notificación Telegram simulada')}
+function previewDoc(name,type){docTitle.textContent=(type==='PDF'?'📕 ':type==='Excel'?'📗 ':'📘 ')+name;docMeta.textContent=type+' · Vista previa ilustrativa';paperTitle.textContent=name.replace(/\.[^.]+$/,'').toUpperCase();paperText.textContent=type==='PDF'?'Vista previa del PDF seleccionado.':type==='Excel'?'En la versión real se puede mostrar una vista tabular o descargar el archivo.':'En la versión real se puede abrir o descargar el documento.'}
+document.getElementById('file').addEventListener('change',e=>{if(e.target.files.length)toast(`${e.target.files.length} archivo(s) seleccionado(s) para subir`)})
+globalSearch.addEventListener('keydown',e=>{if(e.key==='Enter'){const q=e.target.value.trim();if(q){go('personal');personalSearch.value=q;renderPersonal();toast('Búsqueda aplicada en Personal')}}});
+renderPersonal();renderAttendance();
+</script>
+
+<script>
+const saturdayEmployees = [
+ {name:"Lucía Gómez", area:"Tránsito", prev:"Descansó", last:"Mañana"},
+ {name:"Martín Díaz", area:"Control urbano", prev:"Descansó", last:"Siesta"},
+ {name:"Ana Medina", area:"Administración", prev:"Descansó", last:"Mañana"},
+ {name:"José Pérez", area:"Tránsito", prev:"Descansó", last:"Siesta"},
+ {name:"Florencia Torres", area:"Seguridad", prev:"Descansó", last:"Mañana"},
+ {name:"Nicolás Sosa", area:"Control urbano", prev:"Descansó", last:"Siesta"},
+ {name:"Carla Ruiz", area:"Tránsito", prev:"Trabajó", last:"Mañana"},
+ {name:"Diego Pérez", area:"Seguridad", prev:"Trabajó", last:"Siesta"},
+ {name:"Sofía Luna", area:"Administración", prev:"Trabajó", last:"Mañana"},
+ {name:"Pablo Rojas", area:"Control urbano", prev:"Trabajó", last:"Siesta"},
+ {name:"Mariela Paz", area:"Tránsito", prev:"Trabajó", last:"Mañana"},
+ {name:"Lucas Vera", area:"Seguridad", prev:"Trabajó", last:"Siesta"}
+];
+
+let saturdayPlan=[];
+function generateSaturday(){
+ const regime=document.getElementById("satRegime").value;
+ const preferred=saturdayEmployees.filter(x=>x.prev==="Descansó");
+ saturdayPlan=saturdayEmployees.map((e,i)=>{
+   const works=preferred.includes(e);
+   let shift="";
+   if(works){
+     if(regime==="incorporado") shift=e.last==="Mañana"?"Siesta":"Mañana";
+     else shift=["Mañana","Intermedio","Noche"][i%3];
+   }
+   return {...e,works,shift};
+ });
+ renderSaturdayPlan();
+ toast("Propuesta generada");
+}
+function renderSaturdayPlan(){
+ const regime=document.getElementById("satRegime").value;
+ const groups=regime==="incorporado"
+   ? [{n:"Mañana",h:"07:00 – 13:00"},{n:"Siesta",h:"13:00 – 19:00"}]
+   : [{n:"Mañana",h:"07:00 – 13:00"},{n:"Intermedio",h:"13:00 – 19:00"},{n:"Noche",h:"19:00 – 07:00"}];
+
+ const cols=document.getElementById("satShiftColumns");
+ cols.style.gridTemplateColumns=`repeat(${groups.length},minmax(0,1fr))`;
+ cols.innerHTML=groups.map(g=>{
+   const people=saturdayPlan.filter(x=>x.works&&x.shift===g.n);
+   return `<div style="border:1px solid #e6e7ee;border-radius:12px;padding:16px;min-height:150px">
+      <div style="display:flex;justify-content:space-between;gap:8px;align-items:flex-start;margin-bottom:14px">
+        <div><b>${g.n}</b><br><small class="muted">${g.h}</small></div>
+        <span class="badge">${people.length} personas</span>
+      </div>
+      ${people.length?people.map(e=>`<div class="event" style="margin-bottom:8px">
+        <div style="flex:1"><b>${e.name}</b><br><small>${e.area}</small></div>
+      </div>`).join(""):`<small class="muted">Sin personal asignado</small>`}
+   </div>`;
+ }).join("");
+
+ const working=saturdayPlan.filter(x=>x.works).length;
+ const expected=Math.ceil(saturdayPlan.length/2);
+ satEditSummary.innerHTML=working===expected
+   ? `${working} personas asignadas · <span class="badge ok">Distribución válida</span>`
+   : `${working} personas asignadas · <span class="badge warn">Se esperaban aprox. ${expected}</span>`;
+ renderSaturdayEditTable();
+}
+function renderSaturdayEditTable(){
+ const regime=document.getElementById("satRegime").value;
+ const options=regime==="incorporado"?["Mañana","Siesta"]:["Mañana","Intermedio","Noche"];
+ satEditableBody.innerHTML=saturdayPlan.map((e,i)=>`<tr>
+   <td><b>${e.name}</b></td><td>${e.area}</td>
+   <td>${e.prev}${e.prev==="Trabajó"?" · "+e.last:""}</td>
+   <td><select onchange="changeSaturdayWork(${i},this.value)">
+      <option value="Trabaja" ${e.works?"selected":""}>Trabaja</option>
+      <option value="Descansa" ${!e.works?"selected":""}>Descansa</option>
+   </select></td>
+   <td><select ${e.works?"":"disabled"} onchange="changeSaturdayShift(${i},this.value)">
+      ${options.map(x=>`<option ${x===e.shift?"selected":""}>${x}</option>`).join("")}
+   </select></td>
+ </tr>`).join("");
+}
+function changeSaturdayWork(i,value){
+ saturdayPlan[i].works=value==="Trabaja";
+ if(saturdayPlan[i].works&&!saturdayPlan[i].shift){
+   saturdayPlan[i].shift=document.getElementById("satRegime").value==="incorporado"?"Mañana":"Mañana";
+ }
+ renderSaturdayPlan();
+}
+function changeSaturdayShift(i,value){saturdayPlan[i].shift=value;renderSaturdayPlan();}
+function openSaturdayEdit(){satEditPanel.classList.remove("hidden");renderSaturdayEditTable();}
+function closeSaturdayEdit(){satEditPanel.classList.add("hidden");}
+function toggleSaturday(btn){ toast("Cambio manual habilitado. La decisión final queda a cargo del Jefe."); }
+function confirmSaturday(){ toast("Planificación confirmada y guardada en el historial"); }
+
+const eventEmployees = [
+ {name:"Lucía Gómez",area:"Tránsito",prev:false,last:"—",score:98},
+ {name:"Martín Díaz",area:"Control urbano",prev:false,last:"—",score:96},
+ {name:"Ana Medina",area:"Administración",prev:false,last:"—",score:94},
+ {name:"José Pérez",area:"Tránsito",prev:false,last:"—",score:92},
+ {name:"Florencia Torres",area:"Seguridad",prev:false,last:"—",score:90},
+ {name:"Nicolás Sosa",area:"Control urbano",prev:false,last:"—",score:88},
+ {name:"Carla Ruiz",area:"Tránsito",prev:true,last:"Mañana",score:72},
+ {name:"Diego Pérez",area:"Seguridad",prev:true,last:"Tarde",score:70},
+ {name:"Sofía Luna",area:"Administración",prev:true,last:"Noche",score:68},
+ {name:"Pablo Rojas",area:"Control urbano",prev:true,last:"Mañana",score:66},
+ {name:"Mariela Paz",area:"Tránsito",prev:true,last:"Tarde",score:64},
+ {name:"Lucas Vera",area:"Seguridad",prev:true,last:"Noche",score:62}
+];
+
+function openEventShiftModal(){eventShiftModal.classList.add('show')}
+function closeEventShiftModal(){eventShiftModal.classList.remove('show')}
+function saveEventShift(){const name=newShiftName.value.trim(),from=newShiftStart.value,to=newShiftEnd.value,max=parseInt(newShiftMax.value||'0');if(!name||!from||!to||max<1){toast('Completá los datos del turno');return}eventShifts.push({name,from,to,max});renderEventShifts();closeEventShiftModal();newShiftName.value='';toast('Turno agregado al evento')}
+function getEventShifts(){
+ return [...document.querySelectorAll("#eventShiftBody tr")].map(r=>{
+   const inp=r.querySelectorAll("input");
+   return {name:inp[0].value,from:inp[1].value,to:inp[2].value,limit:+inp[3].value};
+ });
+}
+function generateEventAssignment(){
+ const shifts=getEventShifts(); const slots=[];
+ shifts.forEach(s=>{for(let i=0;i<s.limit;i++) slots.push(s)});
+ const selected=eventEmployees.slice().sort((a,b)=>b.score-a.score).slice(0,slots.length);
+ const body=document.getElementById("eventAssignmentBody");
+ body.innerHTML=eventEmployees.map(e=>{
+   const ix=selected.indexOf(e), chosen=ix>=0;
+   let s=chosen?slots[ix]:null;
+   if(chosen && e.prev && s && s.name===e.last && shifts.length>1){
+      s=shifts[(shifts.indexOf(s)+1)%shifts.length];
+   }
+   return `<tr><td><b>${e.name}</b></td><td>${e.area}</td>
+   <td>${e.prev?'<span class="badge warn">Participó</span>':'<span class="badge ok">No participó</span>'}</td>
+   <td>${e.last}</td><td><b>${e.score}</b></td>
+   <td>${chosen?`<select>${shifts.map(x=>`<option ${x===s?"selected":""}>${x.name} ${x.from}–${x.to}</option>`).join("")}</select>`:"—"}</td>
+   <td><input type="checkbox" ${chosen?"checked":""} onchange="updateEventCount()"></td></tr>`;
+ }).join("");
+ updateEventCount();
+ toast("Convocatoria generada priorizando la rotación respecto del evento anterior");
+}
+function updateEventCount(){
+ const n=document.querySelectorAll("#eventAssignmentBody input[type=checkbox]:checked").length;
+ const e=document.getElementById("eventCount"); if(e)e.textContent=n+" seleccionados";
+}
+function confirmEvent(){ toast("Convocatoria confirmada. Se simula el envío de notificaciones por Telegram."); }
+function renderEventPlan(){ toast("Evento seleccionado"); }
+
+setTimeout(()=>{ if(document.getElementById("satBody")) generateSaturday(); if(document.getElementById("eventAssignmentBody")) generateEventAssignment(); },100);
+
+function doLogin(){if(loginUser.value.trim()==='jefe'&&loginPass.value==='1234'){loginScreen.style.display='none';loginError.style.display='none'}else loginError.style.display='block'}
+function logout(){loginScreen.style.display='flex';loginPass.value=''}
+</script>
+
+</body></html>

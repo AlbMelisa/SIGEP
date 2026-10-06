@@ -1,0 +1,5 @@
+html { min-width: 320px; min-height: 100%; scroll-behavior: smooth; }
+body { min-width: 320px; min-height: 100vh; margin: 0; }
+#root { min-height: 100vh; }
+button, input, select { box-sizing: border-box; }
+::selection { color: #173b32; background: #dceade; }
