@@ -28,15 +28,18 @@ builder.Services.AddScoped<IRegimenRepository, RegimenRepository>();
 builder.Services.AddScoped<ITurnoRepository, TurnoRepository>();
 builder.Services.AddScoped<IAsistenciaRepository, AsistenciaRepository>();
 builder.Services.AddScoped<IPlanificacionSabadoRepository, PlanificacionSabadoRepository>();
+builder.Services.AddScoped<IEventoRepository, EventoRepository>();
 
 // Servicios de Dominio (Domain)
 builder.Services.AddScoped<ISabadoRotacionDomainService, SabadoRotacionDomainService>();
+builder.Services.AddScoped<IEventScoringDomainService, EventScoringDomainService>();
 
 // Servicios de Aplicación (Application)
 builder.Services.AddScoped<IAuthAppService, AuthAppService>();
 builder.Services.AddScoped<IPersonalAppService, PersonalAppService>();
 builder.Services.AddScoped<IAsistenciaAppService, AsistenciaAppService>();
 builder.Services.AddScoped<IPlanificacionSabadoAppService, PlanificacionSabadoAppService>();
+builder.Services.AddScoped<IEventoAppService, EventoAppService>();
 
 // 3. Configuración de Autenticación con JWT
 var jwtSecret = builder.Configuration["Jwt:Secret"] ?? "super_secreto_sigep_simoca_2026_jwt_key_minimo_32_caracteres!";

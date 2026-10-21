@@ -22,6 +22,57 @@ namespace SIGEP.Data.Migrations
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
+            modelBuilder.Entity("SIGEP.Domain.Entities.AsignacionEvento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id_asignacion_evento");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<bool>("EsAsignacionManual")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("boolean")
+                        .HasDefaultValue(false)
+                        .HasColumnName("es_asignacion_manual");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("estado");
+
+                    b.Property<int>("IdEmpleado")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_empleado");
+
+                    b.Property<int>("IdTurnoEvento")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_turno_evento");
+
+                    b.Property<string>("MotivoModificacion")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("motivo_modificacion");
+
+                    b.Property<decimal>("PuntajeCalculado")
+                        .HasPrecision(8, 4)
+                        .HasColumnType("numeric(8,4)")
+                        .HasColumnName("puntaje_calculado");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Estado");
+
+                    b.HasIndex("IdEmpleado");
+
+                    b.HasIndex("IdTurnoEvento", "IdEmpleado")
+                        .IsUnique();
+
+                    b.ToTable("asignaciones_evento", (string)null);
+                });
+
             modelBuilder.Entity("SIGEP.Domain.Entities.Asistencia", b =>
                 {
                     b.Property<int>("Id")
@@ -212,6 +263,74 @@ namespace SIGEP.Data.Migrations
                     b.HasIndex("TurnoHabitualId");
 
                     b.ToTable("empleados", (string)null);
+                });
+
+            modelBuilder.Entity("SIGEP.Domain.Entities.Evento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id_evento");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Descripcion")
+                        .HasMaxLength(500)
+                        .HasColumnType("character varying(500)")
+                        .HasColumnName("descripcion");
+
+                    b.Property<string>("Estado")
+                        .IsRequired()
+                        .HasMaxLength(30)
+                        .HasColumnType("character varying(30)")
+                        .HasColumnName("estado");
+
+                    b.Property<DateTime?>("FechaConfirmacion")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("fecha_confirmacion");
+
+                    b.Property<DateTime>("FechaCreacion")
+                        .HasColumnType("timestamp with time zone")
+                        .HasColumnName("fecha_creacion");
+
+                    b.Property<DateOnly>("FechaFin")
+                        .HasColumnType("date")
+                        .HasColumnName("fecha_fin");
+
+                    b.Property<DateOnly>("FechaInicio")
+                        .HasColumnType("date")
+                        .HasColumnName("fecha_inicio");
+
+                    b.Property<int?>("IdUsuarioConfirmacion")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_usuario_confirmacion");
+
+                    b.Property<int>("IdUsuarioCreacion")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_usuario_creacion");
+
+                    b.Property<string>("Lugar")
+                        .HasMaxLength(200)
+                        .HasColumnType("character varying(200)")
+                        .HasColumnName("lugar");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(150)
+                        .HasColumnType("character varying(150)")
+                        .HasColumnName("nombre");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Estado");
+
+                    b.HasIndex("IdUsuarioConfirmacion");
+
+                    b.HasIndex("IdUsuarioCreacion");
+
+                    b.HasIndex("FechaInicio", "FechaFin");
+
+                    b.ToTable("eventos", (string)null);
                 });
 
             modelBuilder.Entity("SIGEP.Domain.Entities.Funcion", b =>
@@ -507,6 +626,50 @@ namespace SIGEP.Data.Migrations
                         });
                 });
 
+            modelBuilder.Entity("SIGEP.Domain.Entities.TurnoEvento", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer")
+                        .HasColumnName("id_turno_evento");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("CupoRequerido")
+                        .HasColumnType("integer")
+                        .HasColumnName("cupo_requerido");
+
+                    b.Property<DateOnly>("Fecha")
+                        .HasColumnType("date")
+                        .HasColumnName("fecha");
+
+                    b.Property<TimeOnly>("HoraFin")
+                        .HasColumnType("time without time zone")
+                        .HasColumnName("hora_fin");
+
+                    b.Property<TimeOnly>("HoraInicio")
+                        .HasColumnType("time without time zone")
+                        .HasColumnName("hora_inicio");
+
+                    b.Property<int>("IdEvento")
+                        .HasColumnType("integer")
+                        .HasColumnName("id_evento");
+
+                    b.Property<string>("Nombre")
+                        .IsRequired()
+                        .HasMaxLength(100)
+                        .HasColumnType("character varying(100)")
+                        .HasColumnName("nombre");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Fecha");
+
+                    b.HasIndex("IdEvento");
+
+                    b.ToTable("turnos_evento", (string)null);
+                });
+
             modelBuilder.Entity("SIGEP.Domain.Entities.Usuario", b =>
                 {
                     b.Property<int>("Id")
@@ -569,6 +732,25 @@ namespace SIGEP.Data.Migrations
                         .IsUnique();
 
                     b.ToTable("usuarios", (string)null);
+                });
+
+            modelBuilder.Entity("SIGEP.Domain.Entities.AsignacionEvento", b =>
+                {
+                    b.HasOne("SIGEP.Domain.Entities.Empleado", "Empleado")
+                        .WithMany()
+                        .HasForeignKey("IdEmpleado")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.HasOne("SIGEP.Domain.Entities.TurnoEvento", "TurnoEvento")
+                        .WithMany("Asignaciones")
+                        .HasForeignKey("IdTurnoEvento")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Empleado");
+
+                    b.Navigation("TurnoEvento");
                 });
 
             modelBuilder.Entity("SIGEP.Domain.Entities.Asistencia", b =>
@@ -644,6 +826,24 @@ namespace SIGEP.Data.Migrations
                     b.Navigation("TurnoHabitual");
                 });
 
+            modelBuilder.Entity("SIGEP.Domain.Entities.Evento", b =>
+                {
+                    b.HasOne("SIGEP.Domain.Entities.Usuario", "UsuarioConfirmacion")
+                        .WithMany()
+                        .HasForeignKey("IdUsuarioConfirmacion")
+                        .OnDelete(DeleteBehavior.Restrict);
+
+                    b.HasOne("SIGEP.Domain.Entities.Usuario", "UsuarioCreacion")
+                        .WithMany()
+                        .HasForeignKey("IdUsuarioCreacion")
+                        .OnDelete(DeleteBehavior.Restrict)
+                        .IsRequired();
+
+                    b.Navigation("UsuarioConfirmacion");
+
+                    b.Navigation("UsuarioCreacion");
+                });
+
             modelBuilder.Entity("SIGEP.Domain.Entities.PlanificacionSabado", b =>
                 {
                     b.HasOne("SIGEP.Domain.Entities.Usuario", "UsuarioConfirmacion")
@@ -673,6 +873,17 @@ namespace SIGEP.Data.Migrations
                     b.Navigation("Regimen");
                 });
 
+            modelBuilder.Entity("SIGEP.Domain.Entities.TurnoEvento", b =>
+                {
+                    b.HasOne("SIGEP.Domain.Entities.Evento", "Evento")
+                        .WithMany("Turnos")
+                        .HasForeignKey("IdEvento")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("Evento");
+                });
+
             modelBuilder.Entity("SIGEP.Domain.Entities.Usuario", b =>
                 {
                     b.HasOne("SIGEP.Domain.Entities.Rol", "Rol")
@@ -684,6 +895,11 @@ namespace SIGEP.Data.Migrations
                     b.Navigation("Rol");
                 });
 
+            modelBuilder.Entity("SIGEP.Domain.Entities.Evento", b =>
+                {
+                    b.Navigation("Turnos");
+                });
+
             modelBuilder.Entity("SIGEP.Domain.Entities.PlanificacionSabado", b =>
                 {
                     b.Navigation("Detalles");
@@ -692,6 +908,11 @@ namespace SIGEP.Data.Migrations
             modelBuilder.Entity("SIGEP.Domain.Entities.Regimen", b =>
                 {
                     b.Navigation("Turnos");
+                });
+
+            modelBuilder.Entity("SIGEP.Domain.Entities.TurnoEvento", b =>
+                {
+                    b.Navigation("Asignaciones");
                 });
 #pragma warning restore 612, 618
         }

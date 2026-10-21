@@ -20,6 +20,9 @@ public class SIGEPDbContext : DbContext, IUnitOfWork
     public DbSet<Asistencia> Asistencias => Set<Asistencia>();
     public DbSet<PlanificacionSabado> PlanificacionesSabado => Set<PlanificacionSabado>();
     public DbSet<DetallePlanificacionSabado> DetallesPlanificacionSabado => Set<DetallePlanificacionSabado>();
+    public DbSet<Evento> Eventos => Set<Evento>();
+    public DbSet<TurnoEvento> TurnosEventos => Set<TurnoEvento>();
+    public DbSet<AsignacionEvento> AsignacionesEventos => Set<AsignacionEvento>();
 
     public SIGEPDbContext(DbContextOptions<SIGEPDbContext> options) : base(options)
     {
