@@ -93,8 +93,12 @@ public class EventScoringDomainService : IEventScoringDomainService
             decimal puntajeSab = 1.0m - ((decimal)historico.CantidadSabadosUltimos90Dias / maxSabados);
             evaluacion.PuntajeSabados = Math.Clamp(puntajeSab, 0.0m, 1.0m);
 
-            // 4. Puntaje Asistencia Semanal: cumplimiento de la jornada ordinaria (5 días laborables de lunes a viernes)
-            decimal puntajeSem = Math.Clamp((decimal)historico.DiasPresentesSemanaPrevia / 5.0m, 0.0m, 1.0m);
+            // 4. Puntaje Asistencia Semanal (Invertido para protección del descanso):
+            // Si el evento es una carga laboral extraordinaria, quien cumplió los 5 días de lunes a viernes
+            // queda protegido con Psem = 0.0 para descansar el fin de semana.
+            // Quien tuvo inasistencias en la semana recibe mayor puntaje para ser convocado a compensar carga laboral.
+            decimal ratioPresente = Math.Clamp((decimal)historico.DiasPresentesSemanaPrevia / 5.0m, 0.0m, 1.0m);
+            decimal puntajeSem = 1.0m - ratioPresente;
             evaluacion.PuntajeAsistenciaSemanal = puntajeSem;
 
             // Ptotal = w1*Phist + w2*Prec + w3*Psab + w4*Psem
