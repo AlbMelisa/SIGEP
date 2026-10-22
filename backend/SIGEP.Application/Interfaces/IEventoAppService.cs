@@ -13,3 +13,4 @@ public interface IEventoAppService
     Task<EventoDto> AjustarAsignacionAsync(AjustarAsignacionEventoRequestDto request, int idUsuarioActual);
     Task<EventoDto> ConfirmarEventoAsync(int idEvento, int idUsuarioActual);
 }
+

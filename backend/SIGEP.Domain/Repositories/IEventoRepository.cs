@@ -11,3 +11,4 @@ public interface IEventoRepository : IRepository<Evento>
     Task<List<Evento>> GetHistorialEventosAsync(int limite = 20, CancellationToken cancellationToken = default);
     Task<Dictionary<int, InfoHistoricoEmpleado>> ObtenerHistoricoParaScoringAsync(DateOnly fechaEvento, CancellationToken cancellationToken = default);
 }
+

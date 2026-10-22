@@ -68,3 +68,4 @@ public class AsignacionEvento : Entity
         MotivoModificacion = motivo.Trim();
     }
 }
+

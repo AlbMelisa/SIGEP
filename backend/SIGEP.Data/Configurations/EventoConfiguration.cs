@@ -77,3 +77,4 @@ public class EventoConfiguration : IEntityTypeConfiguration<Evento>
         builder.HasIndex(e => new { e.FechaInicio, e.FechaFin });
     }
 }
+

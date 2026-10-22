@@ -85,7 +85,7 @@ public class CandidatoEvaluadoDto
     public decimal PuntajeHistorial { get; set; }
     public decimal PuntajeRecencia { get; set; }
     public decimal PuntajeSabados { get; set; }
-    public decimal PuntajeAntiguedad { get; set; }
+    public decimal PuntajeAsistenciaSemanal { get; set; }
 }
 
 public class CandidatoExcluidoDto
@@ -113,3 +113,4 @@ public class AjustarAsignacionEventoRequestDto
     public int IdEmpleadoEntrante { get; set; }
     public string Motivo { get; set; } = null!;
 }
+

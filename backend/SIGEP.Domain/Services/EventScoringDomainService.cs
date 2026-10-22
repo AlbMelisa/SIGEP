@@ -5,15 +5,16 @@ namespace SIGEP.Domain.Services;
 
 /// <summary>
 /// Implementación del Servicio de Dominio para el Algoritmo de Scoring Ponderado (RF16)
+/// alineado con el ERS IEEE 830 (historial, rotación, sábados y asistencia semanal)
 /// y la verificación inquebrantable del descanso laboral de 48 hs (RF17).
 /// </summary>
 public class EventScoringDomainService : IEventScoringDomainService
 {
-    // Ponderadores del modelo matemático (suman 1.0)
-    private const decimal W_HISTORIAL = 0.40m;   // Equidad en participación
-    private const decimal W_RECENCIA = 0.30m;    // Tiempo transcurrido desde el último evento
-    private const decimal W_SABADOS = 0.15m;     // Compensación de carga de fines de semana
-    private const decimal W_ANTIGUEDAD = 0.15m;  // Experiencia y antigüedad laboral
+    // Ponderadores del modelo matemático calibrados (suman 1.0)
+    private const decimal W_HISTORIAL = 0.40m;           // Equidad distributiva en eventos anuales
+    private const decimal W_RECENCIA = 0.30m;            // Factor de rotación quincenal/mensual
+    private const decimal W_SABADOS = 0.15m;             // Compensación por carga de fines de semana
+    private const decimal W_ASISTENCIA_SEMANAL = 0.15m;  // Presentismo y cumplimiento semanal regular (lunes a viernes)
 
     public IReadOnlyList<EvaluacionCandidatoEvento> EvaluarCandidatosParaTurno(
         TurnoEvento turnoEvento,
@@ -68,14 +69,14 @@ public class EventScoringDomainService : IEventScoringDomainService
             }
 
             // =========================================================================
-            // RF16: CÁLCULO DEL SCORE PONDERADO
+            // RF16: CÁLCULO DEL SCORE PONDERADO (ERS IEEE 830)
             // =========================================================================
 
-            // 1. Puntaje Historial: menor cantidad de eventos = mayor prioridad (1.0 = 0 eventos)
+            // 1. Puntaje Historial: menor cantidad de eventos en el año = mayor prioridad (1.0 = 0 eventos)
             decimal puntajeHist = 1.0m - ((decimal)historico.CantidadEventosAnioActual / maxEventos);
             evaluacion.PuntajeHistorial = Math.Clamp(puntajeHist, 0.0m, 1.0m);
 
-            // 2. Puntaje Recencia: más días sin eventos = mayor prioridad
+            // 2. Puntaje Recencia (Factor de rotación): más días sin eventos = mayor prioridad
             decimal puntajeRec;
             if (!historico.FechaUltimoEvento.HasValue)
             {
@@ -88,21 +89,20 @@ public class EventScoringDomainService : IEventScoringDomainService
             }
             evaluacion.PuntajeRecencia = puntajeRec;
 
-            // 3. Puntaje Sábados: menor carga de sábados en los últimos 90 días = mayor disponibilidad
+            // 3. Puntaje Sábados: menor carga de fines de semana en los últimos 90 días = mayor disponibilidad
             decimal puntajeSab = 1.0m - ((decimal)historico.CantidadSabadosUltimos90Dias / maxSabados);
             evaluacion.PuntajeSabados = Math.Clamp(puntajeSab, 0.0m, 1.0m);
 
-            // 4. Puntaje Antigüedad: escala sobre 25 años de servicio
-            var aniosAntiguedad = (decimal)(fechaReferencia - empleado.FechaIngreso).TotalDays / 365.25m;
-            decimal puntajeAnt = Math.Clamp(aniosAntiguedad / 25.0m, 0.0m, 1.0m);
-            evaluacion.PuntajeAntiguedad = puntajeAnt;
+            // 4. Puntaje Asistencia Semanal: cumplimiento de la jornada ordinaria (5 días laborables de lunes a viernes)
+            decimal puntajeSem = Math.Clamp((decimal)historico.DiasPresentesSemanaPrevia / 5.0m, 0.0m, 1.0m);
+            evaluacion.PuntajeAsistenciaSemanal = puntajeSem;
 
-            // Ptotal = w1*Phist + w2*Prec + w3*Psab + w4*Pant
+            // Ptotal = w1*Phist + w2*Prec + w3*Psab + w4*Psem
             evaluacion.PuntajeTotal = Math.Round(
                 (W_HISTORIAL * evaluacion.PuntajeHistorial) +
                 (W_RECENCIA * evaluacion.PuntajeRecencia) +
                 (W_SABADOS * evaluacion.PuntajeSabados) +
-                (W_ANTIGUEDAD * evaluacion.PuntajeAntiguedad),
+                (W_ASISTENCIA_SEMANAL * evaluacion.PuntajeAsistenciaSemanal),
                 4);
 
             resultados.Add(evaluacion);

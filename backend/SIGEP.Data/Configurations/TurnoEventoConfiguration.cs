@@ -55,3 +55,4 @@ public class TurnoEventoConfiguration : IEntityTypeConfiguration<TurnoEvento>
         builder.HasIndex(t => t.Fecha);
     }
 }
+

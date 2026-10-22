@@ -99,3 +99,4 @@ public class Evento : Entity
         Estado = EstadoEvento.Cancelado;
     }
 }
+

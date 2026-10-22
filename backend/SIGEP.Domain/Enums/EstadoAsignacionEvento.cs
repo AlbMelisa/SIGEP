@@ -10,3 +10,4 @@ public enum EstadoAsignacionEvento
     Reemplazado = 3,
     Cancelado = 4
 }
+

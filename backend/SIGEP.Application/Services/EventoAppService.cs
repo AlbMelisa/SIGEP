@@ -124,7 +124,7 @@ public class EventoAppService : IEventoAppService
                 PuntajeHistorial = e.PuntajeHistorial,
                 PuntajeRecencia = e.PuntajeRecencia,
                 PuntajeSabados = e.PuntajeSabados,
-                PuntajeAntiguedad = e.PuntajeAntiguedad
+                PuntajeAsistenciaSemanal = e.PuntajeAsistenciaSemanal
             }).ToList();
 
         var excluidos = evaluaciones
@@ -255,3 +255,4 @@ public class EventoAppService : IEventoAppService
         };
     }
 }
+

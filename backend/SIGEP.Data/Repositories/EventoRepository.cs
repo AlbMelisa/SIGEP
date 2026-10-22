@@ -83,6 +83,18 @@ public class EventoRepository : Repository<Evento>, IEventoRepository
             })
             .ToList();
 
+        // 4. Asistencia Semanal Ordinaria (Presentismo de lunes a viernes previo al evento)
+        int diasHastaLunes = ((int)fechaEvento.DayOfWeek - (int)DayOfWeek.Monday + 7) % 7;
+        if (diasHastaLunes == 0) diasHastaLunes = 7;
+        var inicioSemanaHabil = fechaEvento.AddDays(-diasHastaLunes);
+        var finSemanaHabil = inicioSemanaHabil.AddDays(4);
+
+        var asistenciasSemana = await Context.Asistencias
+            .Where(a => a.TipoJornada == TipoJornada.Ordinaria && a.Estado == EstadoAsistencia.Presente && a.Fecha >= inicioSemanaHabil && a.Fecha <= finSemanaHabil)
+            .GroupBy(a => a.EmpleadoId)
+            .Select(g => new { EmpleadoId = g.Key, Cantidad = g.Count() })
+            .ToListAsync(cancellationToken);
+
         // Consolidar resultados
         var diccionario = new Dictionary<int, InfoHistoricoEmpleado>();
 
@@ -107,6 +119,16 @@ public class EventoRepository : Repository<Evento>, IEventoRepository
             info.CantidadSabadosUltimos90Dias = s.Cantidad;
         }
 
+        foreach (var sem in asistenciasSemana)
+        {
+            if (!diccionario.TryGetValue(sem.EmpleadoId, out var info))
+            {
+                info = new InfoHistoricoEmpleado();
+                diccionario[sem.EmpleadoId] = info;
+            }
+            info.DiasPresentesSemanaPrevia = sem.Cantidad;
+        }
+
         foreach (var g in guardiasNoche)
         {
             if (!diccionario.TryGetValue(g.EmpleadoId, out var info))
@@ -120,3 +142,4 @@ public class EventoRepository : Repository<Evento>, IEventoRepository
         return diccionario;
     }
 }
+

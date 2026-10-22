@@ -61,3 +61,4 @@ public class AsignacionEventoConfiguration : IEntityTypeConfiguration<Asignacion
         builder.HasIndex(a => a.Estado);
     }
 }
+
