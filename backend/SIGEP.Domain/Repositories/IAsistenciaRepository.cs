@@ -6,7 +6,7 @@ namespace SIGEP.Domain.Repositories;
 
 /// <summary>
 /// Contrato del Repositorio de Asistencia.
-/// Soporta la carga diaria por jornada y las consultas complejas de historial multivariable (RF06).
+/// Soporta la carga diaria por jornada, validación de francos compensatorios y consultas de historial (RF04 - RF07).
 /// </summary>
 public interface IAsistenciaRepository : IRepository<Asistencia>
 {
@@ -21,5 +21,14 @@ public interface IAsistenciaRepository : IRepository<Asistencia>
         TipoJornada? tipoJornada,
         CancellationToken cancellationToken = default);
     Task<IEnumerable<Asistencia>> GetAsistenciasRecientesAsync(int empleadoId, DateOnly fechaReferencia, int diasAtras = 30, CancellationToken cancellationToken = default);
-}
 
+    /// <summary>
+    /// Retorna los IDs de empleados que prestaron servicio el día sábado indicado (presentes en asistencia o confirmados en nómina).
+    /// </summary>
+    Task<HashSet<int>> ObtenerEmpleadosQueTrabajaronSabadoAsync(DateOnly sabado, CancellationToken cancellationToken = default);
+
+    /// <summary>
+    /// Retorna los IDs de empleados que ya tienen asignado un Franco en el rango semanal especificado (excluyendo la fecha actual).
+    /// </summary>
+    Task<HashSet<int>> ObtenerEmpleadosConFrancoEnSemanaAsync(DateOnly inicioSemana, DateOnly finSemana, DateOnly fechaExcluir, CancellationToken cancellationToken = default);
+}

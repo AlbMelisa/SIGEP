@@ -90,7 +90,7 @@ public class EventoRepository : Repository<Evento>, IEventoRepository
         var finSemanaHabil = inicioSemanaHabil.AddDays(4);
 
         var asistenciasSemana = await Context.Asistencias
-            .Where(a => a.TipoJornada == TipoJornada.Ordinaria && a.Estado == EstadoAsistencia.Presente && a.Fecha >= inicioSemanaHabil && a.Fecha <= finSemanaHabil)
+            .Where(a => a.TipoJornada == TipoJornada.Ordinaria && (a.Estado == EstadoAsistencia.Presente || a.Estado == EstadoAsistencia.Franco) && a.Fecha >= inicioSemanaHabil && a.Fecha <= finSemanaHabil)
             .GroupBy(a => a.EmpleadoId)
             .Select(g => new { EmpleadoId = g.Key, Cantidad = g.Count() })
             .ToListAsync(cancellationToken);

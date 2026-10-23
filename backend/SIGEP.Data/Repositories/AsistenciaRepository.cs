@@ -103,5 +103,39 @@ public class AsistenciaRepository : Repository<Asistencia>, IAsistenciaRepositor
             .Where(a => a.EmpleadoId == empleadoId && a.Fecha >= fechaLimite && a.Fecha <= fechaReferencia)
             .ToListAsync(cancellationToken);
     }
+
+    public async Task<HashSet<int>> ObtenerEmpleadosQueTrabajaronSabadoAsync(DateOnly sabado, CancellationToken cancellationToken = default)
+    {
+        // 1. Empleados con asistencia 'Presente' en sábado
+        var desdeAsistencias = await DbSet
+            .Where(a => a.Fecha == sabado && a.TipoJornada == TipoJornada.Sabado && a.Estado == EstadoAsistencia.Presente)
+            .Select(a => a.EmpleadoId)
+            .ToListAsync(cancellationToken);
+
+        // 2. Empleados en planificación confirmada de sábado
+        var desdePlanificaciones = await Context.DetallesPlanificacionSabado
+            .Where(d => d.PlanificacionSabado.FechaSabado == sabado && d.PlanificacionSabado.Estado == EstadoPlanificacion.Confirmada)
+            .Select(d => d.IdEmpleado)
+            .ToListAsync(cancellationToken);
+
+        var resultado = new HashSet<int>(desdeAsistencias);
+        foreach (var id in desdePlanificaciones)
+        {
+            resultado.Add(id);
+        }
+
+        return resultado;
+    }
+
+    public async Task<HashSet<int>> ObtenerEmpleadosConFrancoEnSemanaAsync(DateOnly inicioSemana, DateOnly finSemana, DateOnly fechaExcluir, CancellationToken cancellationToken = default)
+    {
+        var francos = await DbSet
+            .Where(a => a.Fecha >= inicioSemana && a.Fecha <= finSemana && a.Fecha != fechaExcluir && a.Estado == EstadoAsistencia.Franco)
+            .Select(a => a.EmpleadoId)
+            .Distinct()
+            .ToListAsync(cancellationToken);
+
+        return new HashSet<int>(francos);
+    }
 }
 

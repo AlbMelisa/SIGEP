@@ -14,7 +14,9 @@ public record AsistenciaItemDto(
     string? HoraIngreso,
     string? HoraSalida,
     string Estado,
-    string? Observacion
+    string? Observacion,
+    bool TieneFrancoDisponible = false,
+    string? DetalleFranco = null
 );
 
 public record GuardarItemAsistenciaDto(
@@ -23,7 +25,9 @@ public record GuardarItemAsistenciaDto(
     string? HoraIngreso,
     string? HoraSalida,
     string Estado,
-    string? Observacion
+    string? Observacion,
+    bool TieneFrancoDisponible = false,
+    string? DetalleFranco = null
 );
 
 public record GuardarPlanillaLoteRequestDto(
