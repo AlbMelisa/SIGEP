@@ -724,18 +724,18 @@ function Dashboard({ employees, attendance, events, eventConvocations, go }) {
     .map((event, index) => ({ event, index }))
     .sort((a, b) => Number(Boolean(eventConvocations[b.index])) - Number(Boolean(eventConvocations[a.index])) || a.event.date.localeCompare(b.event.date))
   return <>
-    <PageHeading eyebrow={todayLabel()} title="Panel general" description="Una mirada clara al estado operativo del personal municipal." action={<button className="button button-outline" onClick={() => go('asistencia')}><Clock3 size={16} /> Ir a asistencia</button>} />
+    <PageHeading eyebrow={todayLabel()} title="Panel general" description="Una mirada clara al estado operativo del personal municipal." action={<button className="button button-primary" onClick={() => go('asistencia')}><Clock3 size={16} /> Ir a asistencia</button>} />
     <section className="metric-grid" aria-label="Indicadores principales">
-      <Metric label="Personal activo" value={employees.length} caption="En ambos regímenes" icon={Users} tone="green" />
-      <Metric label="Presentes hoy" value={presentCount} caption={`de ${employees.length} personas`} icon={Check} tone="blue" />
-      <Metric label="Próximos eventos" value={events.length} caption="En agenda municipal" icon={CalendarDays} tone="coral" />
-      <Metric label="Pendientes" value={events.filter((event) => event.state === 'Borrador').length} caption="Requieren confirmación" icon={Clock3} tone="gold" />
+      <Metric label="Personal activo" value={employees.length} caption="En ambos regímenes" icon={Users} tone="blue" />
+      <Metric label="Presentes hoy" value={presentCount} caption={`de ${employees.length} personas`} icon={Check} tone="green" captionTone="green" />
+      <Metric label="Próximos eventos" value={events.length} caption="En agenda municipal" icon={CalendarDays} tone="blue" />
+      <Metric label="Pendientes" value={events.filter((event) => event.state === 'Borrador').length} caption="Requieren confirmación" icon={Clock3} tone="gold" captionTone="gold" />
     </section>
     <section className="dashboard-grid">
       <div className="panel distribution-panel">
         <div className="panel-heading"><div><span className="eyebrow">COMPOSICIÓN</span><h2>Personal por régimen</h2></div><button className="text-button" onClick={() => go('personal')}>Ver personal <ChevronRight size={15} /></button></div>
         <div className="distribution-total"><b>{employees.length}</b><span>personas registradas</span></div>
-        {regimeCounts.map(({ regime, count }, index) => <div className="regime-row" key={regime}><div className="regime-meta"><span>{regime}</span><b>{count} <small>({employees.length ? Math.round(count / employees.length * 100) : 0}%)</small></b></div><div className="progress-track"><span className={index === 0 ? 'progress-green' : 'progress-coral'} style={{ width: `${employees.length ? count / employees.length * 100 : 0}%` }} /></div></div>)}
+        {regimeCounts.map(({ regime, count }, index) => <div className="regime-row" key={regime}><div className="regime-meta"><span>{regime}</span><b>{count} <small>({employees.length ? Math.round(count / employees.length * 100) : 0}%)</small></b></div><div className="progress-track"><span className={index === 0 ? 'progress-blue' : 'progress-ocre'} style={{ width: `${employees.length ? count / employees.length * 100 : 0}%` }} /></div></div>)}
         <div className="panel-footnote">La modalidad define el turno habitual asignado.</div>
       </div>
       <div className="panel events-panel">
@@ -748,8 +748,8 @@ function Dashboard({ employees, attendance, events, eventConvocations, go }) {
   </>
 }
 
-function Metric({ label, value, caption, icon: Icon, tone }) {
-  return <article className="metric-card"><div className={`metric-icon ${tone}`}><Icon size={18} /></div><span className="metric-label">{label}</span><div className="metric-value">{value}</div><span className="metric-caption">{caption}</span></article>
+function Metric({ label, value, caption, icon: Icon, tone, captionTone }) {
+  return <article className="metric-card"><div className={`metric-icon ${tone}`}><Icon size={18} /></div><span className="metric-label">{label}</span><div className="metric-value">{value}</div><span className={`metric-caption ${captionTone ? `metric-caption-${captionTone}` : ''}`}>{caption}</span></article>
 }
 
 function EventRow({ event }) {
@@ -758,7 +758,18 @@ function EventRow({ event }) {
 }
 
 function StatusBadge({ value }) {
-  const className = value === 'Confirmado' || value === 'Presente' || value === 'Activo' ? 'status-good' : value === 'Borrador' || value === 'Franco' || value === 'Licencia' ? 'status-wait' : value === 'Ausente' ? 'status-bad' : value === 'Inactivo' ? 'status-inactive' : 'status-neutral'
+  let className = 'status-neutral'
+  if (value === 'Confirmado' || value === 'Presente' || value === 'Activo') {
+    className = 'status-good'
+  } else if (value === 'Pendiente' || value === 'Tarde' || value === 'Franco' || value === 'Licencia') {
+    className = 'status-wait'
+  } else if (value === 'Cancelado' || value === 'Ausente' || value === 'Inactivo') {
+    className = 'status-bad'
+  } else if (value === 'Borrador') {
+    className = 'status-neutral'
+  } else if (value === 'Programado' || value === 'En curso' || value === 'Planificado') {
+    className = 'status-info'
+  }
   return <span className={`status-badge ${className}`}><i />{value}</span>
 }
 
