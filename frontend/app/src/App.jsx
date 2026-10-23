@@ -33,9 +33,9 @@ const initialAttendance = [
 ]
 
 const initialEvents = [
-  { id: 1, name: 'Feria municipal', date: '2026-10-03', time: '17:00', place: 'Plaza principal', people: 18, state: 'Borrador' },
-  { id: 2, name: 'Acto institucional', date: '2026-10-08', time: '09:00', place: 'Casa de la Cultura', people: 12, state: 'Confirmado' },
-  { id: 3, name: 'Jornada comunitaria', date: '2026-10-12', time: '08:30', place: 'Parque municipal', people: 20, state: 'Borrador' },
+  { id: 1, name: 'Feria municipal', date: '2026-10-03', time: '17:00', place: 'Plaza principal', people: 0, state: 'Borrador' },
+  { id: 2, name: 'Acto institucional', date: '2026-10-08', time: '09:00', place: 'Casa de la Cultura', people: 0, state: 'Confirmado' },
+  { id: 3, name: 'Jornada comunitaria', date: '2026-10-12', time: '08:30', place: 'Parque municipal', people: 0, state: 'Borrador' },
 ]
 
 const navItems = [
@@ -116,6 +116,8 @@ function App() {
   const [employeeModal, setEmployeeModal] = useState(false)
   const [editingEmployeeId, setEditingEmployeeId] = useState(null)
   const [eventModal, setEventModal] = useState(false)
+  const [isSavingEvent, setIsSavingEvent] = useState(false)
+  const [eventSaveError, setEventSaveError] = useState('')
   const [employeeForm, setEmployeeForm] = useState({ name: '', dni: '', phone: '', funcion: '', regime: 'Incorporado', shift: 'Mañana' })
   const [eventForm, setEventForm] = useState({ name: '', date: '', time: '', place: '' })
   const [saturdayGenerated, setSaturdayGenerated] = useState(false)
@@ -177,7 +179,7 @@ function App() {
               date: e.fechaInicio,
               time: '09:00',
               place: e.lugar || 'Simoca',
-              people: e.totalPersonalAsignado || 10,
+              people: e.totalPersonalAsignado || 0,
               state: e.estado === 'Planificado' ? 'Borrador' : 'Confirmado',
             })))
           }
@@ -363,21 +365,23 @@ function App() {
 
   const saveEvent = async (event) => {
     event.preventDefault()
+    if (!eventForm.name.trim()) {
+      setEventSaveError('El nombre del evento es obligatorio.')
+      return
+    }
+    if (!eventForm.date) {
+      setEventSaveError('La fecha del evento es obligatoria.')
+      return
+    }
+    setIsSavingEvent(true)
+    setEventSaveError('')
     try {
       const payload = {
-        nombre: eventForm.name,
+        nombre: eventForm.name.trim(),
         fechaInicio: eventForm.date,
         fechaFin: eventForm.date,
-        lugar: eventForm.place,
-        turnos: [
-          {
-            nombre: 'Guardia Principal',
-            fecha: eventForm.date,
-            horaInicio: eventForm.time ? `${eventForm.time}:00` : '09:00:00',
-            horaFin: '17:00:00',
-            cupoRequerido: 10,
-          }
-        ]
+        lugar: eventForm.place?.trim() || 'Simoca, Tucumán',
+        turnos: [] // No preasignamos ningún turno ni cantidad forzada
       }
       const nuevoEvento = await eventosApi.crear(payload)
       setEvents((current) => [...current, {
@@ -385,14 +389,19 @@ function App() {
         name: nuevoEvento.nombre,
         date: nuevoEvento.fechaInicio,
         time: eventForm.time || '09:00',
-        place: nuevoEvento.lugar || 'Simoca',
-        people: 10,
+        place: nuevoEvento.lugar || 'Simoca, Tucumán',
+        people: 0,
         state: 'Borrador',
       }])
       setEventModal(false)
+      setEventForm({ name: '', date: '', time: '', place: '' })
       notify('Evento creado exitosamente')
     } catch (err) {
-      notify(err.message || 'Error al crear evento')
+      const msg = err.message || 'Error al crear evento'
+      setEventSaveError(msg)
+      notify(msg)
+    } finally {
+      setIsSavingEvent(false)
     }
   }
 
@@ -495,12 +504,14 @@ function App() {
         }
       }
 
-      // Fallback simulado si no tiene turnos cargados
-      const count = Math.min(events[selectedEvent]?.people ?? 4, activeEmployees.length)
+      // Fallback si no tiene turnos cargados
+      const configuredTurns = eventTurns[selectedEvent] ?? []
+      const totalRequested = configuredTurns.reduce((sum, t) => sum + Number(t.people), 0) || (events[selectedEvent]?.people ?? 0) || 4
+      const count = Math.min(totalRequested, activeEmployees.length)
       const selected = activeEmployees.slice(0, count).map((employee) => employee.id)
       setSelectedPeople(selected)
       setAssignmentGenerated(true)
-      notify('Propuesta preliminar lista para revisar')
+      notify(`Propuesta preliminar calculada para ${count} agentes`)
     } catch (err) {
       notify(err.message || 'Error calculando scoring')
     } finally {
@@ -682,12 +693,18 @@ function App() {
         <div className="modal-actions"><button type="button" className="button button-quiet" onClick={closeEmployeeModal}>Cancelar</button><button className="button button-primary">{editingEmployeeId === null ? 'Guardar' : 'Guardar cambios'}</button></div>
       </form></Modal>}
 
-      {eventModal && <Modal title="Crear evento municipal" onClose={() => setEventModal(false)}><form className="form-grid" onSubmit={saveEvent}>
-        <label className="form-wide">Nombre del evento<input required value={eventForm.name} onChange={(event) => setEventForm({ ...eventForm, name: event.target.value })} placeholder="Ej. Fiesta Nacional del Sulky" /></label>
-        <label>Fecha<input required type="date" value={eventForm.date} onChange={(event) => setEventForm({ ...eventForm, date: event.target.value })} /></label>
-        <label>Hora<input required type="time" value={eventForm.time} onChange={(event) => setEventForm({ ...eventForm, time: event.target.value })} /></label>
-        <label className="form-wide">Lugar<input required value={eventForm.place} onChange={(event) => setEventForm({ ...eventForm, place: event.target.value })} placeholder="Plaza Bartolomé Mitre / Predio Ferial" /></label>
-        <div className="modal-actions"><button type="button" className="button button-quiet" onClick={() => setEventModal(false)}>Cancelar</button><button className="button button-primary">Guardar</button></div>
+      {eventModal && <Modal title="Crear evento municipal" onClose={() => { if (!isSavingEvent) { setEventModal(false); setEventSaveError('') } }}><form className="form-grid" onSubmit={saveEvent}>
+        <label className="form-wide">Nombre del evento<input required disabled={isSavingEvent} value={eventForm.name} onChange={(event) => setEventForm({ ...eventForm, name: event.target.value })} placeholder="Ej. Fiesta Nacional del Sulky" /></label>
+        <label>Fecha<input required disabled={isSavingEvent} type="date" value={eventForm.date} onChange={(event) => setEventForm({ ...eventForm, date: event.target.value })} /></label>
+        <label>Hora<input disabled={isSavingEvent} type="time" value={eventForm.time} onChange={(event) => setEventForm({ ...eventForm, time: event.target.value })} /></label>
+        <label className="form-wide">Lugar<input disabled={isSavingEvent} value={eventForm.place} onChange={(event) => setEventForm({ ...eventForm, place: event.target.value })} placeholder="Plaza Bartolomé Mitre / Predio Ferial" /></label>
+        {eventSaveError && <p className="form-wide event-turn-error" role="alert">{eventSaveError}</p>}
+        <div className="modal-actions">
+          <button type="button" className="button button-quiet" disabled={isSavingEvent} onClick={() => { setEventModal(false); setEventSaveError('') }}>Cancelar</button>
+          <button type="submit" className="button button-primary" disabled={isSavingEvent}>
+            {isSavingEvent ? 'Guardando...' : 'Guardar'}
+          </button>
+        </div>
       </form></Modal>}
 
       {notice && <div className="toast" role="status"><Check size={16} />{notice}</div>}
@@ -821,8 +838,8 @@ function EventsPage({ events, eventConvocations, plannedEventIndexes, onAdd, onP
   const visibleEvents = events.slice((currentPage - 1) * pageSize, currentPage * pageSize)
   return <>
     <PageHeading eyebrow="AGENDA MUNICIPAL · EVENTOS EXTRAORDINARIOS" title="Eventos" description="Organizá las actividades, turnos operativos y calculá la nómina por scoring." action={<button className="button button-primary" onClick={onAdd}><Plus size={17} /> Crear evento</button>} />
-    <div className="event-summary"><div><span className="eyebrow">EN AGENDA</span><b>{events.length}</b></div><div><span className="eyebrow">BORRADORES</span><b>{events.filter((event) => event.state === 'Borrador').length}</b></div><div><span className="eyebrow">PERSONAL SOLICITADO</span><b>{events.reduce((sum, event) => sum + Number(event.people), 0)}</b></div></div>
-    <div className="table-panel"><div className="table-toolbar"><span className="toolbar-title">Agenda y planificaciones de eventos</span><span className="results-count">Ordenados por fecha</span></div><div className="table-scroll"><table><thead><tr><th>EVENTO</th><th>FECHA Y HORA</th><th>LUGAR</th><th>PERSONAL</th><th>ASISTENCIA</th><th>ESTADO</th><th>ACCIONES</th></tr></thead><tbody>{visibleEvents.map((event, index) => { const eventIndex = (currentPage - 1) * pageSize + index; const plan = eventConvocations[eventIndex]; const isPlanned = Boolean(plan) || plannedEventIndexes.includes(eventIndex); const attendees = plan?.people ?? []; const present = attendees.filter((person) => person.attendance === 'Presente').length; return <tr key={event.name}><td><b>{event.name}</b></td><td>{formatDate(event.date)}<span className="cell-subtext">{event.time} h</span></td><td>{event.place}</td><td>{plan ? `${attendees.length} convocados` : `${event.people} solicitados`}</td><td>{plan ? <span className="attendance-summary">{present}/{attendees.length} presentes</span> : '—'}</td><td><StatusBadge value={isPlanned ? 'Confirmado' : event.state} /></td><td><div className="planning-row-actions">{isPlanned ? <><button className="button button-small button-outline" onClick={() => onPlanEvent(eventIndex, false)}>Ver asistencia</button><button className="button button-small button-quiet" disabled={dateHasPassed(event.date)} onClick={() => onPlanEvent(eventIndex, true)}>Editar</button></> : <button className="button button-small button-outline" disabled={dateHasPassed(event.date)} onClick={() => onPlanEvent(eventIndex, false)}>Planificar evento</button>}</div></td></tr> })}</tbody></table></div><Pagination currentPage={currentPage} pageCount={Math.max(1, Math.ceil(events.length / pageSize))} total={events.length} onChange={setCurrentPage} /></div>
+    <div className="event-summary"><div><span className="eyebrow">EN AGENDA</span><b>{events.length}</b></div><div><span className="eyebrow">BORRADORES</span><b>{events.filter((event) => event.state === 'Borrador').length}</b></div><div><span className="eyebrow">PERSONAL CONVOCADO</span><b>{events.reduce((sum, event) => sum + Number(event.people), 0)}</b></div></div>
+    <div className="table-panel"><div className="table-toolbar"><span className="toolbar-title">Agenda y planificaciones de eventos</span><span className="results-count">Ordenados por fecha</span></div><div className="table-scroll"><table><thead><tr><th>EVENTO</th><th>FECHA Y HORA</th><th>LUGAR</th><th>PERSONAL</th><th>ASISTENCIA</th><th>ESTADO</th><th>ACCIONES</th></tr></thead><tbody>{visibleEvents.map((event, index) => { const eventIndex = (currentPage - 1) * pageSize + index; const plan = eventConvocations[eventIndex]; const isPlanned = Boolean(plan) || plannedEventIndexes.includes(eventIndex); const attendees = plan?.people ?? []; const present = attendees.filter((person) => person.attendance === 'Presente').length; return <tr key={event.name}><td><b>{event.name}</b></td><td>{formatDate(event.date)}<span className="cell-subtext">{event.time} h</span></td><td>{event.place}</td><td>{plan ? `${attendees.length} convocados` : event.people > 0 ? `${event.people} solicitados` : 'A definir'}</td><td>{plan ? <span className="attendance-summary">{present}/{attendees.length} presentes</span> : '—'}</td><td><StatusBadge value={isPlanned ? 'Confirmado' : event.state} /></td><td><div className="planning-row-actions">{isPlanned ? <><button className="button button-small button-outline" onClick={() => onPlanEvent(eventIndex, false)}>Ver asistencia</button><button className="button button-small button-quiet" disabled={dateHasPassed(event.date)} onClick={() => onPlanEvent(eventIndex, true)}>Editar</button></> : <button className="button button-small button-outline" disabled={dateHasPassed(event.date)} onClick={() => onPlanEvent(eventIndex, false)}>Planificar evento</button>}</div></td></tr> })}</tbody></table></div><Pagination currentPage={currentPage} pageCount={Math.max(1, Math.ceil(events.length / pageSize))} total={events.length} onChange={setCurrentPage} /></div>
   </>
 }
 
@@ -931,9 +948,7 @@ function AssignmentPage({ events, employees, selectedEvent, setSelectedEvent, st
   const isReadOnly = Boolean(convocation) && !editingConvocation
   const canEditConvocation = Boolean(convocation) && !isPast
   const totalTurnPeople = turns.reduce((total, turn) => total + Number(turn.people), 0)
-  const turnCapacityExceeded = totalTurnPeople > Number(currentEvent?.people ?? 0)
-  const turnCoverageIncomplete = totalTurnPeople < Number(currentEvent?.people ?? 0)
-  const canConfirmTurns = turns.length > 0 && !turnCapacityExceeded && !turnCoverageIncomplete
+  const canConfirmTurns = turns.length > 0 && totalTurnPeople > 0
   const visibleEmployees = employees.slice((currentPage - 1) * pageSize, currentPage * pageSize)
   
   const updateTurns = (nextTurns) => {
@@ -947,11 +962,8 @@ function AssignmentPage({ events, employees, selectedEvent, setSelectedEvent, st
       setTurnError('El horario de inicio y fin no pueden ser iguales.')
       return
     }
-    if (totalTurnPeople + Number(turnForm.people) > Number(currentEvent?.people ?? 0)) {
-      setTurnError('La cantidad total por turnos no puede superar el personal solicitado para el evento.')
-      return
-    }
-    updateTurns([...turns, { ...turnForm, id: `${Date.now()}-${turns.length}`, people: Number(turnForm.people) }])
+    const peopleNum = Math.max(1, Number(turnForm.people) || 1)
+    updateTurns([...turns, { ...turnForm, id: `${Date.now()}-${turns.length}`, people: peopleNum }])
     setTurnForm({ name: '', start: '', end: '', people: '1' })
   }
 
@@ -985,17 +997,17 @@ function AssignmentPage({ events, employees, selectedEvent, setSelectedEvent, st
 
   return <>
     <PageHeading eyebrow="ALGORITMO DE SCORING PONDERADO (RF16 - RF18)" title="Planificación de eventos" description="Configurá los turnos y revisá el ranking de puntaje ponderado con exclusión de 48 hs de descanso." action={<div className="heading-actions"><button className="button button-outline" onClick={() => go('eventos')}><ArrowLeft size={16} /> Volver a eventos</button>{canEditConvocation && isReadOnly && <button className="button button-outline" onClick={() => setEditingConvocation(true)}><Users size={16} /> Editar convocatoria</button>}{generated && !isReadOnly && <>{convocation && <button className="button button-quiet" onClick={cancelConvocationEdit}>Cancelar edición</button>}<button className="button button-primary" disabled={isPast || loading} onClick={confirmConvocation}><Check size={16} /> {convocation ? 'Guardar cambios' : 'Confirmar convocatoria'}</button></>}{convocation && isPast && <span className="event-lock-label">Fecha finalizada · solo lectura</span>}</div>} />
-    <div className="assignment-config"><div className="assignment-select"><label className="eyebrow" htmlFor="event-select">EVENTO</label><select id="event-select" value={selectedEvent} disabled={loading} onChange={handleSelectEvent} >{events.map((item, index) => <option value={index} key={item.name}>{item.name}</option>)}</select><span>{currentEvent ? `${formatDate(currentEvent.date)} · ${currentEvent.place}` : 'Creá un evento para comenzar.'}</span></div><div className="capacity-box"><span className="eyebrow">PERSONAL SOLICITADO</span><b>{currentEvent?.people ?? 0}</b><span>personas</span></div><button className="button button-outline" disabled={loading || isPast || Boolean(convocation)} aria-expanded={showTurnConfig} onClick={() => setShowTurnConfig((open) => !open)}><Plus size={16} /> {showTurnConfig ? 'Ocultar turnos' : 'Configurar turno'}</button></div>
+    <div className="assignment-config"><div className="assignment-select"><label className="eyebrow" htmlFor="event-select">EVENTO</label><select id="event-select" value={selectedEvent} disabled={loading} onChange={handleSelectEvent} >{events.map((item, index) => <option value={index} key={item.name}>{item.name}</option>)}</select><span>{currentEvent ? `${formatDate(currentEvent.date)} · ${currentEvent.place}` : 'Creá un evento para comenzar.'}</span></div><div className="capacity-box"><span className="eyebrow">DOTACIÓN TOTAL</span><b>{totalTurnPeople}</b><span>personas a convocar</span></div><button className="button button-outline" disabled={loading || isPast || Boolean(convocation)} aria-expanded={showTurnConfig} onClick={() => setShowTurnConfig((open) => !open)}><Plus size={16} /> {showTurnConfig ? 'Ocultar turnos' : 'Configurar turnos'}</button></div>
     {showTurnConfig && <section className="event-turn-config" aria-label="Configuración de turnos">
       <div className="event-turn-heading"><div><span className="eyebrow">COBERTURA DEL EVENTO</span><h2>Turnos disponibles</h2></div><span>{turns.length} configurados</span></div>
       {turns.length > 0 && <div className="event-turn-list">{turns.map((turn) => <article className="event-turn-item" key={turn.id}><div><b>{turn.name}</b><span>{turn.start}–{turn.end}</span></div><strong>{turn.people} <small>personas</small></strong><button type="button" className="event-turn-remove" disabled={loading} aria-label={`Quitar turno ${turn.name}`} onClick={() => updateTurns(turns.filter((item) => item.id !== turn.id))}><X size={15} /></button></article>)}</div>}
       {turns.length === 0 && <p className="event-turn-empty">Todavía no hay turnos configurados. Agregá los horarios y la cantidad de personal necesarios para este evento.</p>}
-      <p className={`event-turn-capacity ${turnCapacityExceeded || turnCoverageIncomplete ? 'event-turn-capacity-error' : ''}`}>Personal solicitado: {currentEvent?.people ?? 0} · Asignado a turnos: {totalTurnPeople}{turnCapacityExceeded ? ' · Supera el máximo solicitado' : turnCoverageIncomplete ? ` · Faltan ${Number(currentEvent?.people ?? 0) - totalTurnPeople} por distribuir` : ' · Cobertura completa'}</p>
+      <p className="event-turn-capacity">Turnos configurados: {turns.length} · Dotación total a cubrir: {totalTurnPeople} personas</p>
       <form className="event-turn-form" onSubmit={saveTurn}>
         <label>Turno<input required disabled={loading || isPast} value={turnForm.name} onChange={(event) => setTurnForm({ ...turnForm, name: event.target.value })} placeholder="Ej. Refuerzo Nocturno" /></label>
         <label>Desde<input required disabled={loading || isPast} type="time" value={turnForm.start} onChange={(event) => setTurnForm({ ...turnForm, start: event.target.value })} /></label>
         <label>Hasta<input required disabled={loading || isPast} type="time" value={turnForm.end} onChange={(event) => setTurnForm({ ...turnForm, end: event.target.value })} /></label>
-        <label>Personal requerido<input required disabled={loading || isPast} type="number" min="1" step="1" max={Math.max(1, Number(currentEvent?.people ?? 0) - totalTurnPeople)} value={turnForm.people} onChange={(event) => setTurnForm({ ...turnForm, people: event.target.value })} /></label>
+        <label>Personal requerido<input required disabled={loading || isPast} type="number" min="1" step="1" value={turnForm.people} onChange={(event) => setTurnForm({ ...turnForm, people: event.target.value })} /></label>
         <button className="button button-primary" disabled={loading || isPast}><Plus size={15} /> Agregar turno</button>
       </form>
       {turnError && <p className="event-turn-error" role="alert">{turnError}</p>}
