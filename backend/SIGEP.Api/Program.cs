@@ -85,6 +85,8 @@ var app = builder.Build();
 using (var scope = app.Services.CreateScope())
 {
     var context = scope.ServiceProvider.GetRequiredService<SIGEPDbContext>();
+    
+    // Seed usuarios si no existen
     if (!context.Usuarios.Any())
     {
         var passwordHash = BCrypt.Net.BCrypt.HashPassword("Password123!");
@@ -93,7 +95,31 @@ using (var scope = app.Services.CreateScope())
             passwordHash: passwordHash,
             rolId: 1
         );
-        context.Usuarios.Add(admin);
+        var encargado = new SIGEP.Domain.Entities.Usuario(
+            username: "encargado_operativo",
+            passwordHash: passwordHash,
+            rolId: 2
+        );
+        context.Usuarios.AddRange(admin, encargado);
+        context.SaveChanges();
+    }
+
+    // Seed empleados iniciales si no existen
+    if (!context.Empleados.Any())
+    {
+        var fechaBase = DateTime.UtcNow.AddYears(-3);
+        var empleadosIniciales = new List<SIGEP.Domain.Entities.Empleado>
+        {
+            new("Lucía", "Gómez", "32456781", funcionId: 1, regimenId: 1, turnoHabitualId: 1, direccion: "Av. San Martín 450", telefono: "381-4567891", email: "lucia.gomez@simoca.gob.ar", fechaIngreso: fechaBase.AddMonths(-18)),
+            new("Martín", "Díaz", "30127903", funcionId: 2, regimenId: 1, turnoHabitualId: 2, direccion: "Belgrano 120", telefono: "381-4567892", email: "martin.diaz@simoca.gob.ar", fechaIngreso: fechaBase.AddMonths(-24)),
+            new("Carla", "Ruiz", "28440215", funcionId: 3, regimenId: 2, turnoHabitualId: 4, direccion: "9 de Julio 310", telefono: "381-4567893", email: "carla.ruiz@simoca.gob.ar", fechaIngreso: fechaBase.AddMonths(-30)),
+            new("Diego", "López", "27968540", funcionId: 1, regimenId: 2, turnoHabitualId: 5, direccion: "Rivadavia 880", telefono: "381-4567894", email: "diego.lopez@simoca.gob.ar", fechaIngreso: fechaBase.AddMonths(-36)),
+            new("Ana", "Medina", "33024719", funcionId: 4, regimenId: 1, turnoHabitualId: 3, direccion: "Sarmiento 215", telefono: "381-4567895", email: "ana.medina@simoca.gob.ar", fechaIngreso: fechaBase.AddMonths(-12)),
+            new("José", "Pérez", "29813004", funcionId: 1, regimenId: 2, turnoHabitualId: 6, direccion: "Mitre 740", telefono: "381-4567896", email: "jose.perez@simoca.gob.ar", fechaIngreso: fechaBase.AddMonths(-40)),
+            new("Mónica", "Sosa", "31444229", funcionId: 5, regimenId: 1, turnoHabitualId: 1, direccion: "Alberdi 55", telefono: "381-4567897", email: "monica.sosa@simoca.gob.ar", fechaIngreso: fechaBase.AddMonths(-20)),
+            new("Raúl", "Fernández", "26880331", funcionId: 2, regimenId: 2, turnoHabitualId: 5, direccion: "San Lorenzo 1020", telefono: "381-4567898", email: "raul.fernandez@simoca.gob.ar", fechaIngreso: fechaBase.AddMonths(-48))
+        };
+        context.Empleados.AddRange(empleadosIniciales);
         context.SaveChanges();
     }
 }
