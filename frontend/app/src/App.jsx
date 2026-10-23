@@ -724,12 +724,12 @@ function Dashboard({ employees, attendance, events, eventConvocations, go }) {
     .map((event, index) => ({ event, index }))
     .sort((a, b) => Number(Boolean(eventConvocations[b.index])) - Number(Boolean(eventConvocations[a.index])) || a.event.date.localeCompare(b.event.date))
   return <>
-    <PageHeading eyebrow={todayLabel()} title="Panel general" description="Una mirada clara al estado operativo del personal municipal." action={<button className="button button-primary" onClick={() => go('asistencia')}><Clock3 size={16} /> Ir a asistencia</button>} />
+    <PageHeading eyebrow={todayLabel().toUpperCase()} title="Panel general" description="Una mirada clara al estado operativo del personal municipal." action={<button className="button button-primary" onClick={() => go('asistencia')}><Clock3 size={16} /> Ir a asistencia</button>} />
     <section className="metric-grid" aria-label="Indicadores principales">
       <Metric label="Personal activo" value={employees.length} caption="En ambos regímenes" icon={Users} tone="blue" />
       <Metric label="Presentes hoy" value={presentCount} caption={`de ${employees.length} personas`} icon={Check} tone="green" captionTone="green" />
       <Metric label="Próximos eventos" value={events.length} caption="En agenda municipal" icon={CalendarDays} tone="blue" />
-      <Metric label="Pendientes" value={events.filter((event) => event.state === 'Borrador').length} caption="Requieren confirmación" icon={Clock3} tone="gold" captionTone="gold" />
+      <Metric label="Pendientes" value={events.filter((event) => event.state === 'Borrador').length} caption="Requieren confirmación" icon={Clock3} tone="gold" captionTone="amber" />
     </section>
     <section className="dashboard-grid">
       <div className="panel distribution-panel">
@@ -740,11 +740,10 @@ function Dashboard({ employees, attendance, events, eventConvocations, go }) {
       </div>
       <div className="panel events-panel">
         <div className="panel-heading"><div><span className="eyebrow">AGENDA</span><h2>Próximos eventos</h2></div><button className="icon-button" aria-label="Ver eventos" onClick={() => go('eventos')}><ChevronRight size={18} /></button></div>
-        <div className="event-list">{eventQueue.slice(0, 3).map(({ event }) => <EventRow event={event} key={event.name} />)}</div>
+        <div className="event-list">{eventQueue.slice(0, 3).map(({ event }, index) => <EventRow event={event} key={`${event.id || index}-${event.name}-${index}`} />)}</div>
         <button className="panel-link" onClick={() => go('eventos')}>Ver agenda completa <ChevronRight size={15} /></button>
       </div>
     </section>
-    <div className="workflow-strip"><div className="workflow-icon"><Activity size={19} /></div><div><b>La planificación comienza con la asistencia.</b><span>Registrá la jornada y mantené el historial al día para preparar propuestas más claras.</span></div><button className="button button-quiet" onClick={() => go('asistencia')}>Abrir registro <ChevronRight size={15} /></button></div>
   </>
 }
 
