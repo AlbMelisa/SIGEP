@@ -117,7 +117,7 @@ function App() {
   const [editingEmployeeId, setEditingEmployeeId] = useState(null)
   const [eventModal, setEventModal] = useState(false)
   const [employeeForm, setEmployeeForm] = useState({ name: '', dni: '', phone: '', funcion: '', regime: 'Incorporado', shift: 'Mañana' })
-  const [eventForm, setEventForm] = useState({ name: '', date: '', time: '', place: '', people: '10' })
+  const [eventForm, setEventForm] = useState({ name: '', date: '', time: '', place: '' })
   const [saturdayGenerated, setSaturdayGenerated] = useState(false)
   const [saturdayLoading, setSaturdayLoading] = useState(false)
   const [saturdayPeople, setSaturdayPeople] = useState([])
@@ -375,7 +375,7 @@ function App() {
             fecha: eventForm.date,
             horaInicio: eventForm.time ? `${eventForm.time}:00` : '09:00:00',
             horaFin: '17:00:00',
-            cupoRequerido: Number(eventForm.people) || 5,
+            cupoRequerido: 10,
           }
         ]
       }
@@ -386,11 +386,11 @@ function App() {
         date: nuevoEvento.fechaInicio,
         time: eventForm.time || '09:00',
         place: nuevoEvento.lugar || 'Simoca',
-        people: Number(eventForm.people),
+        people: 10,
         state: 'Borrador',
       }])
       setEventModal(false)
-      notify('Evento creado exitosamente en PostgreSQL')
+      notify('Evento creado exitosamente')
     } catch (err) {
       notify(err.message || 'Error al crear evento')
     }
@@ -607,7 +607,7 @@ function App() {
         <a className="brand" href="#inicio" onClick={() => go('inicio')} aria-label="SIGEP, inicio">
           <img src="/sigep-logo-transparente.png" alt="SIGEP · Sistema Integral de Gestión de Eventos y Personal · Municipalidad de Simoca" />
         </a>
-        <div className="workspace-label">GESTIÓN MUNICIPAL · .NET 8</div>
+        <div className="workspace-label">GESTIÓN MUNICIPAL</div>
         <nav className="nav-list" aria-label="Navegación principal">
           {navItems.map(({ id, label, icon: Icon }) => (
             <button className={`nav-item ${page === id || (id === 'eventos' && page === 'asignacion') ? 'nav-item-active' : ''}`} key={id} onClick={() => go(id)}>
@@ -679,7 +679,7 @@ function App() {
         <label>Función<select value={employeeForm.funcion} onChange={(event) => setEmployeeForm({ ...employeeForm, funcion: event.target.value })}>{(referencias.funciones.length ? referencias.funciones.map(f => f.nombre) : ['Servicios', 'Tránsito', 'Administración', 'Cultura', 'Desarrollo Social']).map(f => <option key={f}>{f}</option>)}</select></label>
         <label>Régimen<select value={employeeForm.regime} onChange={(event) => setEmployeeForm({ ...employeeForm, regime: event.target.value })}><option>Incorporado</option><option>Histórico</option></select></label>
         <label>Turno habitual<select value={employeeForm.shift} onChange={(event) => setEmployeeForm({ ...employeeForm, shift: event.target.value })}><option>Mañana</option><option>Siesta</option><option>Tarde</option><option>Noche</option></select></label>
-        <div className="modal-actions"><button type="button" className="button button-quiet" onClick={closeEmployeeModal}>Cancelar</button><button className="button button-primary">{editingEmployeeId === null ? 'Guardar en base de datos' : 'Guardar cambios'}</button></div>
+        <div className="modal-actions"><button type="button" className="button button-quiet" onClick={closeEmployeeModal}>Cancelar</button><button className="button button-primary">{editingEmployeeId === null ? 'Guardar' : 'Guardar cambios'}</button></div>
       </form></Modal>}
 
       {eventModal && <Modal title="Crear evento municipal" onClose={() => setEventModal(false)}><form className="form-grid" onSubmit={saveEvent}>
@@ -687,8 +687,7 @@ function App() {
         <label>Fecha<input required type="date" value={eventForm.date} onChange={(event) => setEventForm({ ...eventForm, date: event.target.value })} /></label>
         <label>Hora<input required type="time" value={eventForm.time} onChange={(event) => setEventForm({ ...eventForm, time: event.target.value })} /></label>
         <label className="form-wide">Lugar<input required value={eventForm.place} onChange={(event) => setEventForm({ ...eventForm, place: event.target.value })} placeholder="Plaza Bartolomé Mitre / Predio Ferial" /></label>
-        <label>Personal requerido<input required type="number" min="1" value={eventForm.people} onChange={(event) => setEventForm({ ...eventForm, people: event.target.value })} /></label>
-        <div className="modal-actions"><button type="button" className="button button-quiet" onClick={() => setEventModal(false)}>Cancelar</button><button className="button button-primary">Guardar en PostgreSQL</button></div>
+        <div className="modal-actions"><button type="button" className="button button-quiet" onClick={() => setEventModal(false)}>Cancelar</button><button className="button button-primary">Guardar</button></div>
       </form></Modal>}
 
       {notice && <div className="toast" role="status"><Check size={16} />{notice}</div>}
@@ -772,7 +771,7 @@ function AttendancePage({ employees, attendance, attendanceDate, onDateChange, u
   const shiftCounts = employees.reduce((counts, employee) => ({ ...counts, [employee.shift]: (counts[employee.shift] ?? 0) + 1 }), {})
   
   return <>
-    <PageHeading eyebrow="REGISTRO DIARIO Y FRANCOS COMPENSATORIOS" title="Asistencia" description="Cargá la jornada del equipo con validación automática de francos por sábados trabajados." action={tab === 'registro' ? <button className="button button-primary" onClick={onSave}><Check size={16} /> Guardar en base de datos</button> : null} />
+    <PageHeading eyebrow="REGISTRO DIARIO Y FRANCOS COMPENSATORIOS" title="Asistencia" description="Cargá la jornada del equipo con validación automática de francos por sábados trabajados." action={tab === 'registro' ? <button className="button button-primary" onClick={onSave}><Check size={16} /> Guardar</button> : null} />
     <div className="tabs"><button className={tab === 'registro' ? 'tab-active' : ''} onClick={() => setTab('registro')}>Registro del día</button><button className={tab === 'historial' ? 'tab-active' : ''} onClick={() => setTab('historial')}>Historial</button></div>
     {tab === 'registro' ? <div className="table-panel">
       <div className="table-toolbar"><label className="field-search"><Search size={16} /><input aria-label="Buscar para registrar asistencia" value={search} onChange={(event) => { setSearch(event.target.value); setCurrentPage(1) }} placeholder="Buscar por nombre o DNI" /></label><label className="date-field"><CalendarDays size={16} /><input type="date" value={attendanceDate} onChange={(e) => onDateChange(e.target.value)} /></label><span className="results-count">{rows.filter(({ record }) => record.status === 'Presente').length} presentes</span></div>
