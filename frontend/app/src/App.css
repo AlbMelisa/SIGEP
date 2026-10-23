@@ -373,11 +373,11 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 /* TARJETAS MÉTRICAS (DASHBOARD) */
 .metric-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
 .metric-card {
-  position: relative;
-  min-height: 142px;
+  display: flex;
+  flex-direction: column;
   border: 1px solid var(--bordes);
   border-radius: 12px;
-  padding: 20px 22px 18px;
+  padding: 20px 22px;
   background: var(--superficie);
   box-shadow: 0 1px 3px rgba(19, 41, 75, 0.03);
   animation: rise-in .45s both;
@@ -390,7 +390,7 @@ button:disabled { cursor: not-allowed; opacity: .5; }
   display: grid;
   width: 36px;
   height: 36px;
-  margin-bottom: 12px;
+  margin-bottom: 14px;
   place-items: center;
   border-radius: 8px;
 }
@@ -399,9 +399,9 @@ button:disabled { cursor: not-allowed; opacity: .5; }
 .metric-icon.coral { color: var(--azul-institucional); background: var(--azul-claro); }
 .metric-icon.gold, .metric-icon.amber { color: var(--estado-advertencia-texto); background: var(--estado-advertencia-fondo); }
 
-.metric-label { color: var(--texto-secundario); font-size: 12px; font-weight: 500; }
-.metric-value { margin: 4px 0 0; color: var(--azul-marino); font-family: 'DM Serif Display', Georgia, serif; font-size: 36px; line-height: 1.1; font-weight: 400; }
-.metric-caption { position: absolute; right: 22px; bottom: 18px; left: 22px; color: var(--texto-secundario); font-size: 12px; }
+.metric-label { color: var(--texto-secundario); font-size: 12px; font-weight: 500; margin-bottom: 4px; }
+.metric-value { margin: 0; color: var(--azul-marino); font-family: 'DM Serif Display', Georgia, serif; font-size: 36px; line-height: 1.1; font-weight: 400; }
+.metric-caption { margin-top: 6px; color: var(--texto-secundario); font-size: 12px; }
 .metric-caption-green { color: var(--estado-exito-texto) !important; font-weight: 600; }
 .metric-caption-amber, .metric-caption-gold { color: var(--estado-advertencia-texto) !important; font-weight: 600; }
 
